@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 import os
 from db import db
 from flask_restful import Api
-from User.views import userProfile
+from User.views import profile
+from Entreprise.views import entreprise
 
 app = Flask(__name__)
 CORS(app)
@@ -27,14 +28,16 @@ def hello_world():  # put application's code here
     return 'Hello World!'
 
 
-app.register_blueprint(userProfile)
+app.register_blueprint(profile)
+app.register_blueprint(entreprise)
 
-
-@app.before_first_request
-def create_tables():
+with app.app_context():
     db.create_all()
+#@app.before_first_request
+#def create_tables():
+    #db.create_all()
 
 
 if __name__ == '__main__':
 
-    app.run(debug=True, port=5000, host="0.0.0.0")
+    app.run(debug=True, port=5000)
