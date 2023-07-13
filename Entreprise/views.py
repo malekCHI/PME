@@ -13,7 +13,10 @@ def create_entreprise():
     description = request.json.get('description', '')
     email = request.json.get('email', '')
     tel = request.json.get('tel', '')
-
+    if len(adresse) > 10:
+            return jsonify({
+            "error": "adresse must be less than 10 characters!"
+         }),400
     if not (nom and adresse):
         return jsonify({
             "error": "Please enter valid name and adresse!"
