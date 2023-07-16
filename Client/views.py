@@ -1,6 +1,7 @@
 from Client.models import ClientModel
 from Client.utils import get_all_Clients, add_client
 from flask import Blueprint, request, jsonify
+from db import db
 
 client = Blueprint("client", __name__, url_prefix="/client")
 
@@ -72,33 +73,22 @@ def update_client(client_id):
     client.email_destinataire = email_destinataire
     client.email_copies = email_copies
 
-    # Enregistrer les modifications dans la base de données (e.g., db.session.commit())
+    # Enregistrer les modifications dans la base de données
+    db.session.commit()
 
-    return (
-        jsonify(
-            {
-                "message": "Client updated",
-                "client": {
-                    "nom": client.nom,
-                    "adresse": client.adresse,
-                    "contact": client.contact,
-                    "frequence_relance": client.frequence_relance,
-                    "email_destinataire": client.email_destinataire,
-                    "email_copies": client.email_copies,
-                },
-            }
-        ),
-        200,
+    return jsonify(
+        {
+            "message": "Client updated",
+            "client": {
+                "nom": client.nom,
+                "adresse": client.adresse,
+                "contact": client.contact,
+                "frequence_relance": client.frequence_relance,
+                "email_destinataire": client.email_destinataire,
+                "email_copies": client.email_copies,
+            },
+        }
     )
-
-
-@client.delete("/delete/<int:client_id>")
-def delete_client(client_id):
-    client = ClientModel.query.get(client_id)
-    if client:
-        client.delete_from_db()
-        return {"message": "Client deleted successfully"}
-    return {"error": "Client not found"}
 
 
 # Usage: PUT /entreprise/update/123
