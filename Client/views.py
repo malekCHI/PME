@@ -12,41 +12,54 @@ def create_client():
     nom = data.get("nom")
     adresse = data.get("adresse")
     contact = data.get("contact")
+    id_Entreprise = data.get("id_Entreprise")
     frequence_relance = data.get("frequence_relance")
     email_destinataire = data.get("email_destinataire")
     email_copies = data.get("email_copies")
 
-    add_client(
+    client = ClientModel(
         nom=nom,
         adresse=adresse,
         contact=contact,
+        id_Entreprise=id_Entreprise,
         frequence_relance=frequence_relance,
         email_destinataire=email_destinataire,
         email_copies=email_copies,
     )
+    client.save_to_db()
 
     return {"message": "Client added successfully"}
 
 
 @client.get("/get_client")
-def get_client():
+def get_clients():
     pages = request.args.get("page")
     per_page = 10
     id_client = request.args.get("client_id")
 
     if not pages:
         if id_client:
-            return jsonify({"client": get_client()})
+            return jsonify({"client": get_client(id_client)})
         else:
             return jsonify({"client": get_all_Clients()})
     else:
         page = int(pages)
         if id_client:
             return jsonify(
-                {"client": get_client().paginate(page, per_page, error_out=False).items}
+                {
+                    "client": get_client(id_client)
+                    .paginate(page, per_page, error_out=False)
+                    .items
+                }
             )
         else:
-            return jsonify({"client": get_all_Clients().paginate(page, per_page, error_out=False).items})  # type: ignore
+            return jsonify(
+                {
+                    "client": get_all_Clients()
+                    .paginate(page, per_page, error_out=False)
+                    .items
+                }
+            )
 
 
 @client.put("/update/<int:client_id>")
@@ -55,6 +68,7 @@ def update_client(client_id):
     nom = data.get("nom", "")
     adresse = data.get("adresse", "")
     contact = data.get("contact", "")
+    id_Entreprise = data.get("id_Entreprise", "")
     frequence_relance = data.get("frequence_relance", "")
     email_destinataire = data.get("email_destinataire", "")
     email_copies = data.get("email_copies", "")
@@ -69,6 +83,7 @@ def update_client(client_id):
     client.nom = nom
     client.adresse = adresse
     client.contact = contact
+    client.id_Entreprise = id_Entreprise
     client.frequence_relance = frequence_relance
     client.email_destinataire = email_destinataire
     client.email_copies = email_copies
@@ -83,15 +98,10 @@ def update_client(client_id):
                 "nom": client.nom,
                 "adresse": client.adresse,
                 "contact": client.contact,
+                "id_Entreprise": client.id_Entreprise,
                 "frequence_relance": client.frequence_relance,
                 "email_destinataire": client.email_destinataire,
                 "email_copies": client.email_copies,
             },
         }
     )
-
-
-# Usage: PUT /entreprise/update/123
-# Request JSON body: {"nom": "New Name", "adresse": "New Address", "description": "New Description"}
-
-# Usage: DELETE /entreprise/delete/123

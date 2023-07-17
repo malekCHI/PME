@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from Contracts.utils import get_all_contracts, add_contract
 from Contracts.models import ContractModel
 
+from db import db
+
 
 contract = Blueprint("contract", __name__, url_prefix="/contract")
 
@@ -9,6 +11,7 @@ contract = Blueprint("contract", __name__, url_prefix="/contract")
 @contract.post("/create")
 def create_contract():
     data = request.json
+    id_client = data.get("id_client")
     date_debut = data.get("date_debut")
     date_fin = data.get("date_fin")
     conditions_financieres = data.get("conditions_financieres")
@@ -18,6 +21,7 @@ def create_contract():
     fichier_pdf = data.get("fichier_pdf")
 
     contract = ContractModel(
+        id_client=id_client,
         date_debut=date_debut,
         date_fin=date_fin,
         conditions_financieres=conditions_financieres,
@@ -40,6 +44,7 @@ def get_contract():
 @contract.put("/update/<int:contract_id>")
 def update_contract(contract_id):
     data = request.json
+    id_client = data.get("id_client")
     date_debut = data.get("date_debut")
     date_fin = data.get("date_fin")
     conditions_financieres = data.get("conditions_financieres")
@@ -52,6 +57,7 @@ def update_contract(contract_id):
     if contract is None:
         return jsonify({"error": "Contract not found!"}), 404
 
+    contract.id_client = id_client
     contract.date_debut = date_debut
     contract.date_fin = date_fin
     contract.conditions_financieres = conditions_financieres

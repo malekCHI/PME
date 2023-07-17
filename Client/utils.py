@@ -1,5 +1,7 @@
-from .models import ClientModel
 from flask import request
+
+# from Client.models import ClientModel
+from .models import ClientModel
 
 
 def get_all_Clients():
@@ -26,8 +28,16 @@ def is_valid_string(value):
 
 
 def add_client(
-    nom, adresse, contact, frequence_relance, email_destinataire, email_copies
+    nom,
+    adresse,
+    contact,
+    id_Entreprise,
+    frequence_relance,
+    email_destinataire,
+    email_copies,
 ):
+    # Rest of the code remains the same
+
     if not is_valid_string(nom):
         return {"error": "Invalid name"}
     if not is_valid_string(adresse):
@@ -44,6 +54,7 @@ def add_client(
         nom=nom,
         adresse=adresse,
         contact=contact,
+        id_Entreprise=id_Entreprise,
         frequence_relance=frequence_relance,
         email_destinataire=email_destinataire,
         email_copies=email_copies,
@@ -58,6 +69,7 @@ def update_client(client_id):
         client.nom = data.get("nom", client.nom)
         client.adresse = data.get("adresse", client.adresse)
         client.contact = data.get("contact", client.contact)
+        client.id_Entreprise = data.get("id_Entreprise", client.id_Entreprise)
         client.frequence_relance = data.get(
             "frequence_relance", client.frequence_relance
         )

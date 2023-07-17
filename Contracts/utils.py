@@ -23,6 +23,7 @@ def is_valid_string(value):
 
 
 def add_contract(
+    id_client,
     date_debut,
     date_fin,
     conditions_financieres,
@@ -46,6 +47,7 @@ def add_contract(
     if not is_valid_string(fichier_pdf):
         return {"error": "Invalid PDF file"}
     contract = ContractModel(
+        id_client=id_client,
         date_debut=date_debut,
         date_fin=date_fin,
         conditions_financieres=conditions_financieres,
@@ -61,6 +63,7 @@ def update_contract(contract_id):
     contract = ContractModel.query.get(contract_id)
     if contract:
         data = request.json
+        contract.id_client = data.get("id_client", contract.id_client)
         contract.date_debut = data.get("date_debut", contract.date_debut)
         contract.date_fin = data.get("date_fin", contract.date_fin)
         contract.conditions_financieres = data.get(
