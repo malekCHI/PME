@@ -9,18 +9,20 @@ class Entreprise (db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     tel = db.Column(db.Integer, nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow,nullable=True) 
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id_user'))
     #clients = db.relationship('Client', backref='entreprise', lazy=True)
 
     
     def __repr__(self):
         return f'<Entreprise {self.nom}>'
 
-    def __init__(self,nom,adresse,description,email,tel):
+    def __init__(self,nom,adresse,description,email,tel,id_user):
         self.nom = nom
         self.adresse = adresse
         self.description = description
         self.email=email
         self.tel=tel
+        self.id_user=id_user
 
     def serialize(self):
             return {
@@ -31,6 +33,7 @@ class Entreprise (db.Model):
                 'email': self.email, 
                 'tel': self.tel, 
                 'creation_date':self.creation_date.strftime('%Y-%m-%d'),
+                'id_user':self.id_user
                 }
             
     def save_to_db(self):
