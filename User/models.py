@@ -12,9 +12,9 @@ class UserModel(db.Model):
     password_hash = db.Column(db.Text, nullable=False)
     description = db.Column(db.String())
     creation_date = db.Column(db.DateTime, default=datetime.utcnow) 
-    profile = db.relationship("Profile", lazy = "dynamic",backref="profiles")
-    profile_id = db.Column(db.Integer,db.ForeignKey('profiles.id_profile'))
-    previleges = db.relationship("PrevilegeModel", secondary="user_previlege",lazy='dynamic',backref=db.backref('users', lazy='dynamic'))
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id_profile'))
+    profile = db.relationship("ProfileModel", backref="associated_users")
+    previleges = db.relationship("PrevilegeModel", secondary="user_previlege",lazy='dynamic',backref=db.backref('users_previlege', lazy='dynamic'))
     
     def __init__(self,nom,prenom,email,description,password_hash,creaation_date,profile_id):
         self.nom = nom
@@ -47,8 +47,8 @@ class ProfileModel(db.Model):
     nom = db.Column(db.String(), unique=True,  nullable=False)
     description = db.Column(db.String())
     creation_date = db.Column(db.DateTime, default=datetime.utcnow) 
-    users = db.relationship('UserModel', lazy='dynamic', backref="profiles")
-    previleges = db.relationship("PrevilegeModel", secondary="profile_previlege",lazy='dynamic',backref=db.backref('profiles', lazy='dynamic'))
+    users = db.relationship('UserModel', backref="user_profile")
+    previleges = db.relationship("PrevilegeModel", secondary="profile_previlege",lazy='dynamic',backref=db.backref('profiles_previlege', lazy='dynamic'))
     #user_id = db.Column(db.Integer,db.ForeignKey('user.id_user'))
     #users = db.relationship('UserModel', lazy='dynamic', backref="profiles")
     #previleges = db.relationship('PrevilegeModel', secondary=profile_previlege, lazy='dynamic', backref=db.backref('profiles', lazy='dynamic'))
@@ -89,8 +89,8 @@ class PrevilegeModel(db.Model):
     nom = db.Column(db.String(), unique=True,  nullable=False)
     description = db.Column(db.String())
     creation_date = db.Column(db.DateTime, default=datetime.utcnow) 
-    profiles = db.relationship("ProfileModel", secondary="profile_previlege",lazy='dynamic',backref=db.backref('previleges', lazy='dynamic'))
-    users = db.relationship("UserModel", secondary="user_previlege",lazy='dynamic',backref=db.backref('previleges', lazy='dynamic'))
+    profiles = db.relationship("ProfileModel", secondary="profile_previlege",lazy='dynamic',backref=db.backref('previleges_profil', lazy='dynamic'))
+    users = db.relationship("UserModel", secondary="user_previlege",lazy='dynamic',backref=db.backref('previleges_user', lazy='dynamic'))
 
     def __init__(self,nom,description,creation_date,profiles):
         self.nom = nom
