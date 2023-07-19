@@ -16,6 +16,7 @@ from Entreprise.views import entreprise
 
 
 app = Flask(__name__)
+app.template_folder = "templates"
 CORS(app)
 load_dotenv()
 
@@ -52,6 +53,10 @@ with app.app_context():
 # @app.before_first_request
 # def create_tables():
 # db.create_all()
+
+
+# apload_image
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000, host="0.0.0.0")
