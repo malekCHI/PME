@@ -1,0 +1,50 @@
+
+  					+++INTERFACE ADMIN+++
+1/ Liste des actions de le semaine:  	     - Planification pour les actions.	
+				     - Envoyer des rappels de paiement.
+				     - Contacter les clients en retard/recouvrement.
+				     -> Suivre les taches prioritaires.
+
+2/ Liste des relances de la semaine envoyées auto- par la plateforme:
+				     - Afficher les relances auto envoyeés aux clients 								        chaque semaine.
+				     - Vérifier l'historique des relances et s"assurer des 								       rappels envoyés.
+				     -Faire faciliter la communication avec les clients.
+				     - Maintenir des traces des relances effectuées.
+
+3/ Factures recemment payées:       	     - Afficher les factures recemment payées.
+				     - Suivre les paiements effectués et pouvoir les voir.
+
+4/ Factures en attente de validation: 
+				     - Mettre en evidance les factures nécessitant une 								        validation supplémentaire avant d'etre envoyées au clients
+				     - Gérer le processus de validation interne.
+				     - S'assurer que seules les factures correctes et 								        approuvées sont envoyées.
+
+5/ KPI- Key Performance Indicators:  	     -Taux de recouvrement/ Délai moyen de paiement/ Montant total des 				       créances.
+
+5.1/ Total des montants échus et non régularisés: 
+				     - Afficher le montant total du pour les factures qui ont atteint leur date 						       d'écheance et non pas encore reglées.
+
+5.2/ Total des montant non-échus et non régularisés:  
+				     - Afficher le montant total du pour les factures qui ont la date d'échéance a 				      venir.
+				     - ...
+6/ Les clients a haut risque: 
+				     -  Afficher une listes des clients qui on un risque élevé(retard de 				       		       paiement/impayés).
+7/ Rappels de contracts: 		     -  Afficher les rappels de contrats a venir, indiquant les dates de fin de contact 				       proches our les dates de renégociation prévues.
+					+++CREATION D'ENTREPRISES+++
+-Créer/ gérer les entreprises.
+- Mettre à jour(modifier) les info de chaque entreprise, aussi le logo. 
+- Avoir un menu pour naviguer entre les données.
++ Avoir le nom de l'entreprise affiché en haut du menu pour indiquer clairement l'espace dédié à cette entreprise.
+					       +++Gestion Des Clients+++
++Avoir un bouton pour modifier les attribues de chaque client.
++Avoir un bouton pour ajouter des nouveaux clients en HAUT de la liste.( Cord: nom, adresse, etc...)
++Associer chaque client à une entreprise a l'aide d'une LISTE DEROULANTE.
+-Avoir une fonction SUPPLEMENTAIRE qui consiste a définir la freq de relance des paiements pour chaque client, aussi permettant à l'admin de spécifier les rappels auto pour les paiements en retard.
+					     +++GESTION DES CONTRATS+++
+- Ajouter des contrats en spécifiant la date de début et de la fin, les conditions financières et la date de rappel pour la nouvel négociation.
+- Pouvoir telecharger une version PDF du contrat.
+					+++CREATION DE FACTURES+++
+- Créer une nouvelle facture en choisissant un client dans la liste( avec un modele prédéfini) (date,montant en lettres, devise)
+- Status du facture sera "En attente de validation".
+- Validation de la facture par un utilsateur spécifique, sinon elle ne sera pas inclue dans le systeme.
+   >>VOIR CAHIER DE CHARGE
