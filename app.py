@@ -9,7 +9,6 @@ from Logo import upload
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
-app.config['UPLOAD_FOLDER'] = '/path/to/the/uploads'
 app.config["JWT_TOKEN_LOCATION"] = ["headers", "query_string"]
 app.config["JWT_HEADER_TYPE"] = ""
 app.config["JWT_HEADER_NAME"] = "Authorization"
