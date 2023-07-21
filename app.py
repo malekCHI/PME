@@ -4,8 +4,9 @@ import os
 from flask import Flask,jsonify
 from db import db
 from flask_restful import Api
-from User.views import profile
+from Profile.views import profiles
 from Entreprise.views import entreprise
+from Previlege.views import previlege
 from User.views import user
 from flask_jwt_extended import (
     JWTManager
@@ -30,7 +31,8 @@ def hello_world():  # put application's code here
     return 'Hello World!'
 
 
-app.register_blueprint(profile)
+app.register_blueprint(profiles)
+app.register_blueprint(previlege)
 app.register_blueprint(entreprise)
 app.register_blueprint(user)
 

@@ -10,7 +10,6 @@ class Entreprise (db.Model):
     tel = db.Column(db.Integer, nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow,nullable=True) 
     id_user = db.Column(db.Integer, db.ForeignKey('user.id_user'))
-    #clients = db.relationship('Client', backref='entreprise', lazy=True)
 
     
     def __repr__(self):
