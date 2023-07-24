@@ -118,29 +118,31 @@ def create():
 
 
 @facture.put('/<int:_id>')
-def update(id_facture, TypeFacture, date_emission, description, prix_ht,prix_forfaitaire,prix_jour, nbr_jour, prix_livrable, total, tva, total_ttc):
+def update(_id):
     data = request.get_json()
-    
-    id_facture = data.get("id_facture")
+
+    # Extract data from the request JSON
     TypeFacture = data.get("TypeFacture")
     date_emission = data.get("date_emission")
-    description= data.get("description")
-    prix_ht=data.get("prix_ht")
+    description = data.get("description")
+    prix_ht = data.get("prix_ht")
     prix_forfaitaire = data.get("prix_forfaitaire")
-    prix_jour= data.get("prix_jour")
-    nbr_jour= data.get("nbr_jour")
+    prix_jour = data.get("prix_jour")
+    nbr_jour = data.get("nbr_jour")
     prix_livrable = data.get("prix_livrable")
-    total= data.get("total")
-    tva= data.get("tva")
-    total_ttc=data.get("total_ttc")
+    total = data.get("total")
+    tva = data.get("tva")
+    total_ttc = data.get("total_ttc")
 
-
-    if not (id_facture,TypeFacture,date_emission,description,prix_ht,prix_forfaitaire, prix_jour,nbr_jour,prix_livrable, total,tva,total_ttc):
+    # Check if all data is provided
+    if not (TypeFacture and date_emission and description and prix_ht and prix_forfaitaire and prix_jour and nbr_jour and prix_livrable and total and tva and total_ttc):
         return {'error': 'Provide full info.'}, 400
 
-    if update_facture(id_facture, TypeFacture,date_emission,description, prix_ht,prix_forfaitaire,prix_jour, nbr_jour,prix_livrable,total,tva, total_ttc):
+    # Call the update_facture function with the extracted data and _id parameter
+    if update_facture(_id, TypeFacture, date_emission, description, prix_ht, prix_forfaitaire, prix_jour, nbr_jour, prix_livrable, total, tva, total_ttc):
         return {'message': 'facture updated successfully.'}, 200
     return {'message': 'facture not found.'}, 404
+
 
 @facture.get('/type/<string:facture_type>')
 def get_by_type(facture_type):

@@ -1,17 +1,15 @@
 from enum import Enum
 from typing import Literal
-# Define the email templates
+
 class TypeEmail(Enum):
     Rappel_de_paiement = 'Rappel de paiement'
     Facture = 'Facture'
     Validation_de_la_facture = 'Validation de la facture'
     Rappel_daction = 'Rappel daction'
     Rappel_de_date_nego = 'Rappel de date nego'
-
-
-EmailTemplate = Literal['Rappel de paiement', 'Facture', 'Validation de la facture','Rappel daction', 'Rappel de date nego']
-
-Rappel_de_paiement = """Cher [Nom du client],
+EmailTemplate = Literal['Rappel de paiement','Facture','Validation de la facture','Rappel daction','Rappel de date nego']
+class EmailTemplates(Enum):
+    Rappel_de_paiement = """Cher [Nom du client],
 
 Nous vous rappelons respectueusement qu'une facture en attente est toujours ouverte à votre nom. Veuillez prendre en compte les détails ci-dessous :
 
@@ -29,7 +27,7 @@ ________________________________________________________________________________
 
 Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).
 """
-Facture = """Cher [Nom du client],
+    Facture = """Cher [Nom du client],
 
 Nous vous envoyons ci-joint la facture [Numéro de facture] correspondant à nos services/produits fournis. Veuillez trouver le montant dû, les détails de la facture et les informations de paiement ci-dessous :
 
@@ -47,7 +45,7 @@ ________________________________________________________________________________
 
 Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).
 """
-Validation_de_la_facture = """Cher(e) [Nom du validateur],
+    Validation_de_la_facture = """Cher(e) [Nom du validateur],
 
 Une nouvelle facture nécessitant votre validation a été créée dans le système. Veuillez prendre en compte les détails ci-dessous :
 
@@ -71,7 +69,7 @@ ________________________________________________________________________________
 Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).
 
 """
-Rappel_daction = """Cher(e) [Nom de l'utilisateur],
+    Rappel_daction = """Cher(e) [Nom de l'utilisateur],
 
 Ce courriel vous rappelle qu'une action doit être effectuée dans les prochains jours. Veuillez prendre en compte les détails ci-dessous :
 
@@ -89,7 +87,7 @@ ________________________________________________________________________________
 
 Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).
 """
-Rappel_de_date_nego="""Cher(e) [Nom du destinataire],
+    Rappel_de_date_nego="""Cher(e) [Nom du destinataire],
 
 Nous vous rappelons que la date de négociation du contrat [Numéro de contrat] approche à grands pas. Veuillez prendre en compte les détails ci-dessous :
 

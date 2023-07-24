@@ -25,11 +25,11 @@ class FactureModel(db.Model):
 
     def serialize(self):
         data = {
-            'id_facture': self.id,
-            'date_emission': self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'id_facture': self.id_facture,
+            'date_emission': self.date_emission.strftime('%Y-%m-%d %H:%M:%S'),
             'description':self.description,
             'prix_ht':self.prix_ht,
-            'TypeFacture': self.TypeFacture,
+            'TypeFacture': self.TypeFacture.value if self.TypeFacture else None,
             'prix_forfaitaire':self.prix_forfaitaire,
             'prix_jour':self.prix_jour,
             'nbr_jour':self.nbr_jour,
