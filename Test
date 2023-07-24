@@ -1,0 +1,30 @@
+import smtplib
+from email.message import EmailMessage
+from typing import Literal
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Define the email templates
+EmailTemplate = Literal['Invoice Template', 'Reminder Template']
+
+# Function to generate email based on the template
+def generate_email(template: EmailTemplate, subject: str, body: str):
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = os.getenv('EMAIL_ADDRESS')
+    msg['To'] = os.getenv('EMAIL_ADDRESS')
+    msg.set_content(body)
+
+    with smtplib.SMTP_SSL('smtp.live.com', 465) as smtp:
+        smtp.login(os.getenv('EMAIL_ADDRESS',''), os.getenv('EMAIL_PASSWORD',''))
+        smtp.send_message(msg)
+
+# Example usage
+template = 'Invoice Template'
+subject = 'Invoice for Order #12345'
+body = 'Dear customer, please find attached the invoice for your recent order. Thank you for your business.'
+
+generate_email(template, subject, body)
