@@ -13,18 +13,24 @@ class UserModel(db.Model):
     creation_date = db.Column(db.DateTime, default=datetime.utcnow) 
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id_profile'))
     profile = db.relationship("ProfileModel")
-    # previleges = db.relationship("PrevilegeModel", secondary="user_previlege",backref=db.backref('use_previ'))
-    
-    def __init__(self,nom,prenom,email,description,password_hash,profile_id ):
+    previleges = db.relationship("PrevilegeModel", secondary="user_previlege", back_populates="users")
+    def __init__(self,nom,prenom,email,description,password_hash,profile_id,previleges):
         self.nom = nom
         self.prenom = prenom      
         self.email = email
         self.description = description
         self.password_hash = password_hash
         self.profile_id = profile_id 
+        self.previleges = previleges 
         
-    def serialize(self):
-            return {
+        
+    def serialize(self,visited=None):
+        visited = visited or set()
+        if self in visited:
+            return {'id_user': self.id_user}
+        
+        visited.add(self)
+        return {
                 'id_user': self.id_user,
                 'nom': self.nom,
                 'prenom': self.prenom,
@@ -32,8 +38,8 @@ class UserModel(db.Model):
                 'password_hash': self.password_hash,
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
-                'profile_id': self.profile_id
-                # 'previleges': [act.serialize() for act in self.previleges.all()],
+                'profile_id': self.profile_id,
+                'previleges': [previlege.serialize(visited) for previlege in self.previleges],
 
                 }
 
@@ -45,3 +51,9 @@ class UserModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+
+class user_previlege(db.Model):
+    __tablename__ = 'user_previlege'
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id_user'), primary_key=True)
+    id_previlege = db.Column(db.Integer, db.ForeignKey('previlege.id_previlege'), primary_key=True)

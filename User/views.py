@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from User.models import UserModel
 from Profile.models import ProfileModel
+from Previlege.models import PrevilegeModel
 from passlib.hash import bcrypt
 import bcrypt
 from sqlalchemy.exc import IntegrityError
@@ -131,4 +132,25 @@ def remove_user(_id_user):
     
 
 
+        
+@user.post('/assign_user_to_privileges')
+def assign_user_to_privileges():
+    try:
+        id_user = request.json.get('id_user', '')
+        privileges_id = request.json.get('previleges', [])
+        
+        user = UserModel.query.get(id_user)
+        if not profile:
+            return 'user not found', 404
 
+        # Fetchi previleges by id 
+        previleges = PrevilegeModel.query.filter(PrevilegeModel.id_previlege.in_(privileges_id)).all()
+        # Assign the profile to the list of privileges
+        user.previleges.extend(previleges)    
+        print(user)
+        # Commit changes 
+        db.session.commit()
+        return 'user assigned to privileges successfully', 200
+    except Exception as e:
+        db.session.rollback()
+        return str(e), 500

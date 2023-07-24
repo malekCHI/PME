@@ -7,13 +7,14 @@ class PrevilegeModel(db.Model):
     description = db.Column(db.String())
     creation_date = db.Column(db.DateTime, default=datetime.utcnow) 
     profiles = db.relationship("ProfileModel", secondary="profile_previlege", back_populates="previleges")
-    # users = db.relationship("UserModel", secondary="user_previlege",lazy='dynamic',backref=db.backref('previ_user', lazy='dynamic'))
+    users = db.relationship("UserModel", secondary="user_previlege", back_populates="previleges")
 
-    def __init__(self,nom,description,creation_date,profiles):
+    def __init__(self,nom,description,creation_date,profiles,users):
         self.nom = nom
         self.description = description
         self.creation_date = creation_date
         self.profiles = profiles
+        self.users = users
     
     def serialize(self,visited=None):
         visited = visited or set()
@@ -27,6 +28,7 @@ class PrevilegeModel(db.Model):
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
                 'profiles': [profile .serialize(visited) for profile  in self.profiles],
+                'users': [user .serialize(visited) for user  in self.users],
                 }
        
       
