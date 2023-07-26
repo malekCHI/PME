@@ -14,14 +14,14 @@ class UserModel(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id_profile'))
     profile = db.relationship("ProfileModel")
     previleges = db.relationship("PrevilegeModel", secondary="user_previlege", back_populates="users")
-    def __init__(self,nom,prenom,email,description,password_hash,profile_id,previleges):
+    def __init__(self,nom,prenom,email,description,password_hash,profile_id,previleges=None):
         self.nom = nom
         self.prenom = prenom      
         self.email = email
         self.description = description
         self.password_hash = password_hash
         self.profile_id = profile_id 
-        self.previleges = previleges 
+        self.previleges = [] 
         
         
     def serialize(self,visited=None):

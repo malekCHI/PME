@@ -1,10 +1,11 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import current_user
+from flask_jwt_extended import current_user, jwt_required,get_jwt_identity
 from Entreprise.models import Entreprise
 from Entreprise.utils import add_entreprise,update_entreprise,delete_entreprise
 import re
 
 from User.utils import token_required
+# from User.models import UserModel
 entreprise = Blueprint("entreprise", __name__, url_prefix="/entreprise")
 
 
@@ -68,25 +69,24 @@ def edit_entreprise(_id_Entreprise):
 
 
 @entreprise.get('/get_entreprise')
-# @token_required
-def get_entreprise():
-    # print(current_user.id_user)
-    # curentuser = Entreprise.query.filter_by(user_id=current_user.id_user)
+@jwt_required()
+def get_entreprisee():
+    user_id = get_jwt_identity()
+    print(user_id)
     pages = request.args.get('page')
     per_page = 10
     id_Entreprise = request.args.get('id_Entreprise')
-    # if curentuser:
     if not pages:
-        if id_Entreprise:
-            return {'entreprise': list(map(lambda x: x.serialize(), Entreprise.query.filter_by(id_Entreprise=id_Entreprise)))}
-        else:
-            return {'entreprises': list(map(lambda x: x.serialize(), Entreprise.query.all()))}
+            if id_Entreprise:
+               return {'entreprise': list(map(lambda x: x.serialize(), Entreprise.query.filter_by(id_Entreprise=id_Entreprise)))}
+            else:
+               return {'entreprises': list(map(lambda x: x.serialize(), Entreprise.query.all()))}
     else:
-        page = int(pages)
-        if id_Entreprise:
-            return {'entreprise': list(map(lambda x: x.serialize(), Entreprise.query.filter_by(id_Entreprise=id_Entreprise).paginate(page, per_page, error_out=False).items))}
-        else:
-            return {'entreprises': list(map(lambda x: x.serialize(), Entreprise.query.paginate(page, per_page, error_out=False).items))}
+            page = int(pages)
+            if id_Entreprise:
+                return {'entreprise': list(map(lambda x: x.serialize(), Entreprise.query.filter_by(id_Entreprise=id_Entreprise).paginate(page, per_page, error_out=False).items))}
+            else:
+                 return {'entreprises': list(map(lambda x: x.serialize(), Entreprise.query.paginate(page, per_page, error_out=False).items))}
 
  
 @entreprise.delete('/delete/<int:_id_Entreprise>')

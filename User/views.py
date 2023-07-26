@@ -11,9 +11,9 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 import bcrypt
+from User.utils import token_required
 from werkzeug.security import generate_password_hash,check_password_hash
 from User.utils import add_user,update_user,delete_user
-
 
 profile = Blueprint("profile", __name__, url_prefix="/profile")
 user = Blueprint("user", __name__, url_prefix="/users")
@@ -29,6 +29,7 @@ def signup_user():
         password_hash = request.json.get('password_hash', None)
         description = request.json.get('description', None)
         profile_id = request.json.get('profile_id', None)
+        # previleges = request.json.get('previleges', None)
         
         if not email:
             return 'Missing email', 400
@@ -40,8 +41,7 @@ def signup_user():
         if not profile:
             return 'Profile not found', 400
         add_user(nom, prenom, email,hashed,description,profile_id)
-        access_token = create_access_token(identity={"email": email})
-        return {"access_token": access_token}, 200
+        return {"message": "User added successfully"}, 200
     except IntegrityError:
         # the rollback func reverts the changes made to the db
         db.session.rollback()
@@ -57,7 +57,7 @@ def login_user():
         email = request.json.get('email', None)
         password = request.json.get('password', None)
         
-        if not email:
+        if not email: 
             return 'Missing email', 400
         if not password:
             return 'Missing password', 400
@@ -68,7 +68,7 @@ def login_user():
 
         if check_password_hash(user.password_hash,password):
         # Verify the provided password
-            access_token = create_access_token(identity={"email": email})
+            access_token = create_access_token(identity={"id_user": user.id_user})
             return {"access_token": access_token}, 200
         else:
             return 'Invalid Login Info!', 400
@@ -130,9 +130,6 @@ def remove_user(_id_user):
     else:
         return jsonify({'error': "No user found with the given ID!"}), 404
     
-
-
-        
 @user.post('/assign_user_to_privileges')
 def assign_user_to_privileges():
     try:
@@ -142,7 +139,6 @@ def assign_user_to_privileges():
         user = UserModel.query.get(id_user)
         if not profile:
             return 'user not found', 404
-
         # Fetchi previleges by id 
         previleges = PrevilegeModel.query.filter(PrevilegeModel.id_previlege.in_(privileges_id)).all()
         # Assign the profile to the list of privileges
@@ -154,3 +150,14 @@ def assign_user_to_privileges():
     except Exception as e:
         db.session.rollback()
         return str(e), 500
+
+
+
+@user.get("/currentuser")
+@jwt_required()
+def get_current_user():
+    user_id = get_jwt_identity()
+    return jsonify({
+        "message": "successfully retrieved user profile",
+        "data": user_id
+    })

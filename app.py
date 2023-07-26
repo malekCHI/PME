@@ -20,9 +20,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
+
 api = Api(app)
 db.init_app(app)
-app.secret_key = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+app.config['SECRET_KEY'] = SECRET_KEY
 jwt = JWTManager(app)
 
 

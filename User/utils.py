@@ -1,27 +1,31 @@
 from functools import wraps
 from flask import app, request,jsonify
 import jwt
+import time
 import uuid
 from werkzeug.security import generate_password_hash
 from User.models import UserModel
+import flask_jwt_extended 
 
 
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-       token = None
-       if 'x-access-tokens' in request.headers:
-           token = request.headers['x-access-tokens']
- 
-       if not token:
+        token = request.headers['x-access-tokens']
+        if not token:
            return jsonify({'message': 'a valid token is missing'})
-       try:
-           data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-           current_user = UserModel.query.filter_by(id_user=data['id_user']).first()
-       except:
-           return jsonify({'message': 'token is invalid'})
+       
+        if 'x-access-tokens' in request.headers:
+           token = request.headers['x-access-tokens']
+           print(token)
+           try:
+                data = flask_jwt_extended.decode_token(token)
+                print(data)
+                current_user = UserModel.query.filter_by(id_user=data['identity']['id_user']).first()
+           except:
+                return jsonify({'message': 'token is invalid'})
  
-       return f(current_user, *args, **kwargs)
+        return f(current_user, *args, **kwargs)
     return decorator
 
 
@@ -59,3 +63,8 @@ def delete_user(_id_user):
         return True
     return False      
     
+    
+
+
+
+
