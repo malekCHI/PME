@@ -15,5 +15,4 @@ COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 COPY . /code/
 
-CMD gunicorn --bind 0.0.0.0:5000 -w 3 app:app
-
+CMD [ "flask", "run", "--host=0.0.0.0", "--port=5000"]

@@ -1,38 +1,27 @@
 version: '3.7'
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    restart: always
+  flask_app:
+    container_name: flask_app
+    image: francescoxx/flask_live_app:1.0.0
+    build: .
     ports:
-      - 5000:5000
-    networks:
-      - flask_network
-    volumes: 
-      - /home/pme/static:/code/static/
-
-
-  db:
-    image: postgres:13
-    restart: always
-    ports:
-      - 5433:5432
-    networks:
-      - flask_network
+      - "5000:5000"
     environment:
+      - DATABASE_URI=postgresql://postgres:imenadel@flask_db:5432/pme
+    depends_on:
+      - flask_db
+  flask_db:
+    container_name: flask_db
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=imenadel
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=50050275
       - POSTGRES_DB=pme
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-networks:
-  flask_network:
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
-
-
-
-
+  pgdata: {}

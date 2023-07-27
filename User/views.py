@@ -151,8 +151,6 @@ def assign_user_to_privileges():
         db.session.rollback()
         return str(e), 500
 
-
-
 @user.get("/currentuser")
 @jwt_required()
 def get_current_user():

@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 from flask import Flask,jsonify
 from db import db
+import time 
 from flask_restful import Api
 from Profile.views import profiles
 from Entreprise.views import entreprise
@@ -40,9 +41,10 @@ app.register_blueprint(user)
 
 with app.app_context():
     db.create_all()
-#@app.before_first_request
-#def create_tables():
-    #db.create_all()
+# @app.before_first_request
+# def create_tables():
+#     with app.app_context():
+#         db.create_all()
 
 
 if __name__ == '__main__':
