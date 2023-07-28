@@ -10,11 +10,10 @@ class ProfileModel(db.Model,SerializerMixin):
     creation_date = db.Column(db.DateTime, default=datetime.utcnow) 
     previleges = db.relationship("PrevilegeModel", secondary="profile_previlege", back_populates="profiles")
     
-    def __init__(self,nom,description,creation_date,previleges):
+    def __init__(self,nom,description,creation_date):
         self.nom = nom
         self.description = description
         self.creation_date = creation_date
-        self.previleges = previleges
     
     def serialize(self,visited=None):
         visited = visited or set()
@@ -27,8 +26,7 @@ class ProfileModel(db.Model,SerializerMixin):
                 'nom': self.nom,
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
-                'previleges': [previlege.serialize(visited) for previlege in self.previleges],
-                }
+                'previleges': [previlege.serialize(visited) for previlege in self.previleges],  }
        
     def save_to_db(self):
         db.session.add(self)

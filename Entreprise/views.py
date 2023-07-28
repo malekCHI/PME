@@ -16,9 +16,6 @@ def create_entreprise():
     description = request.json.get('description', '')
     email = request.json.get('email', '')
     tel = request.json.get('tel', '')
-    id_user=request.json.get('id_user', '')
-    if not id_user:
-        return 'User not found', 400
     if len(adresse) > 10:
             return jsonify({
             "error": "adresse must be less than 10 characters!"
@@ -33,15 +30,19 @@ def create_entreprise():
         return jsonify({
             "error": "Email must be less than 50 characters!"
          }),400
-    if re.search(r'\d', email):
+    if tel is not None and not str(tel).isdigit():
         return jsonify({
-           "error": "Invalid email format. Numbers are not allowed in the email"
+        "error": "Invalid tel format. Tel must be an integer."
+    }), 400
+    if re.search(r'\d', nom):
+        return jsonify({
+           "error": "Invalid nom format. Numbers are not allowed in the nom"
          }),400
     if '@' not in email or 'com' not in email:
         return jsonify({
             "error": 'Invalid email format. Email must contain "@" and "com"'
          }),400
-    add_entreprise(nom, adresse, description,email,tel,id_user)
+    add_entreprise(nom, adresse, description,email,tel)
     return jsonify({
          'message': "Entreprise created",
      }), 201
@@ -51,16 +52,14 @@ def edit_entreprise(_id_Entreprise):
     _nom = request.json.get('nom', '')
     _adresse = request.json.get('adresse', '')
     _description = request.json.get('description', '')
-    _creation_date = request.json.get('creation_date', '')
     _email = request.json.get('email', '')
     _tel = request.json.get('tel', '')
-    _id_user = request.json.get('id_user', '')
     if not (_id_Entreprise and _nom ):
         return jsonify({
             "error": "Please enter a valid ID and  name!"
          }), 400
 
-    if update_entreprise(_id_Entreprise, _nom, _adresse, _description,_creation_date,_email,_tel,_id_user):
+    if update_entreprise(_id_Entreprise, _nom, _adresse, _description,_email,_tel):
         return jsonify({
              'message': "Entreprise updated",
          }), 200

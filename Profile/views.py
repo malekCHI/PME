@@ -10,7 +10,7 @@ def create_profile():
     nom = request.json.get('nom', '')
     description = request.json.get('description', '')
     creation_date = request.json.get('creation_date', '')
-    previleges = request.json.get('previleges', [])
+    # previleges = request.json.get('previleges', [])
     if len(description) > 10:
             return jsonify({
             "error": "description must be less than 10 characters!"
@@ -22,7 +22,7 @@ def create_profile():
     if ProfileModel.query.filter_by(nom=nom).first() is not None:
         return jsonify({'error': "Profile already exist!"}), 409
 
-    add_profile(nom, description,creation_date,previleges)
+    add_profile(nom, description,creation_date)
     return jsonify({
          'message': "Profile created",
      }), 201

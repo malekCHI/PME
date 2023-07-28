@@ -9,12 +9,11 @@ class PrevilegeModel(db.Model):
     profiles = db.relationship("ProfileModel", secondary="profile_previlege", back_populates="previleges")
     users = db.relationship("UserModel", secondary="user_previlege", back_populates="previleges")
 
-    def __init__(self,nom,description,creation_date,profiles,users):
+    def __init__(self,nom,description,creation_date,profiles):
         self.nom = nom
         self.description = description
         self.creation_date = creation_date
         self.profiles = profiles
-        self.users = users
     
     def serialize(self,visited=None):
         visited = visited or set()
@@ -31,7 +30,6 @@ class PrevilegeModel(db.Model):
                 'users': [user .serialize(visited) for user  in self.users],
                 }
        
-      
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

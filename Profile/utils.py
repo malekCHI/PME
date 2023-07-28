@@ -12,8 +12,8 @@ def get_profile(_id_profile):
     return {'profile': list(map(lambda x: x.serialize(), ProfileModel.query.filter_by(id_profile=_id_profile).first()))}
 
 
-def add_profile(nom, description,creation_date,previleges):
-    profile = ProfileModel(nom=nom,description=description,creation_date=creation_date,previleges=previleges) 
+def add_profile(nom, description,creation_date):
+    profile = ProfileModel(nom=nom,description=description,creation_date=creation_date) 
     profile.save_to_db()
 
 
