@@ -2,7 +2,7 @@ from db import db
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 
-class ProfileModel(db.Model,SerializerMixin):
+class ProfileModel(db.Model):
     __tablename__ = "profiles"
     id_profile = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(), unique=True,  nullable=False)
@@ -26,7 +26,8 @@ class ProfileModel(db.Model,SerializerMixin):
                 'nom': self.nom,
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
-                'previleges': [previlege.serialize(visited) for previlege in self.previleges],  }
+                'previleges': [previlege.serialize() for previlege in self.previleges],  
+                }
        
     def save_to_db(self):
         db.session.add(self)

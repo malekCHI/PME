@@ -21,8 +21,7 @@ class UserModel(db.Model):
         self.description = description
         self.password_hash = password_hash
         self.profile_id = profile_id 
-        self.previleges = [] 
-        
+        self.previleges = []        
         
     def serialize(self,visited=None):
         visited = visited or set()
@@ -39,7 +38,7 @@ class UserModel(db.Model):
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
                 'profile_id': self.profile_id,
-                'previleges': [previlege.serialize(visited) for previlege in self.previleges],
+                'previleges ': [previlege.serialize(visited) for previlege in self.previleges ],
 
                 }
 
