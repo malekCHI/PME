@@ -1,0 +1,24 @@
+Objet : Validation de la facture - {{ Numéro_de_facture }} - {{ Nom_de_l_entreprise }}
+
+Cher(e) {{ Nom_du_validateur }},
+
+Une nouvelle facture nécessitant votre validation a été créée dans le système. Veuillez prendre en compte les détails ci-dessous :
+
+Numéro de facture : {{ Numéro_de_facture }}
+Montant de la facture : {{ Montant_de_la_facture }}
+Date de la facture : {{ Date_de_la_facture }}
+Date d'échéance : {{ Date_d_échéance_de_paiement }}
+Entreprise émettrice : {{ Nom_de_l_entreprise }}
+Client : {{ Nom_du_client }}
+
+Veuillez examiner attentivement les informations de la facture et confirmer sa validité en cliquant sur le lien de validation ci-dessous :
+
+[Insérer le lien de validation ici]
+
+En cas de questions ou de besoin d'assistance supplémentaire, n'hésitez pas à nous contacter. Nous vous remercions de votre coopération dans le processus de validation des factures.
+
+Cordialement,
+L'équipe de {{ Nom_de_l_entreprise }}
+
+
+Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).

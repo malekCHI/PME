@@ -1,0 +1,18 @@
+Objet : Rappel d'action - {{ Description_de_l_action }} - {{ Nom_de_l_entreprise }}
+
+Cher(e) {{ Nom_de_l_utilisateur }},
+
+Ce courriel vous rappelle qu'une action doit être effectuée dans les prochains jours. Veuillez prendre en compte les détails ci-dessous :
+
+Action : {{ Description_de_l_action }}
+Date limite : {{ Date_limite_de_l_action }}
+
+Nous vous rappelons de compléter cette action avant la date limite mentionnée ci-dessus. Assurez-vous de suivre les procédures et les instructions spécifiées pour accomplir cette tâche. En cas de questions ou de besoin d'assistance supplémentaire, n'hésitez pas à nous contacter.
+
+Merci de votre attention et de votre coopération.
+
+Cordialement,
+L'équipe de {{ Nom_de_l_entreprise }}
+
+
+Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).

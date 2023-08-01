@@ -7,6 +7,7 @@ from flask_restful import Api
 from Factures.views import facture
 from Logo import upload
 from Email.views import email
+from Paiement.views import paiement
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
@@ -38,6 +39,7 @@ def hello_world():  # put application's code here
 app.register_blueprint(upload)
 app.register_blueprint(facture)
 app.register_blueprint(email)
+app.register_blueprint(paiement)
 
 
 

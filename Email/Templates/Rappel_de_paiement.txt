@@ -1,0 +1,19 @@
+Objet : Rappel de paiement - Facture en attente - {{ Numéro_de_facture }} - {{ Nom_de_l_entreprise }}
+
+{{ Nom_du_client }},
+
+Nous vous envoyons ci-joint la facture [{{ Numéro_de_facture }}] correspondant à nos services/produits fournis. Veuillez trouver le montant dû, les détails de la facture et les informations de paiement ci-dessous :
+
+Montant dû : {{ Montant_de_la_facture }}
+Date de la facture : {{ Date_de_la_facture }}
+Date d'échéance : {{ Date_d_échéance_de_paiement }}
+Méthode de paiement : {{ Méthode_de_paiement_acceptée }}
+
+Veuillez effectuer le paiement avant la date d'échéance mentionnée ci-dessus. En cas de questions ou de préoccupations, n'hésitez pas à nous contacter. Nous vous remercions de votre coopération.
+
+Cordialement,
+L'équipe de {{ Nom_de_l_entreprise }}
+
+__________________________________________________________________________________________________________________
+
+Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).

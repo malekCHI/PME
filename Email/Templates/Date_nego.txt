@@ -1,0 +1,20 @@
+Objet : Rappel de date de négociation de contrat - {{ Numéro_de_contrat }} - {{ Nom_de_l_entreprise }}
+
+Cher(e) {{ Nom_du_destinataire }},
+
+Nous vous rappelons que la date de négociation du contrat {{ Numéro_de_contrat }} approche à grands pas. Veuillez prendre en compte les détails ci-dessous :
+
+Numéro de contrat : {{ Numéro_de_contrat }}
+Date de début du contrat : {{ Date_de_début_du_contrat }}
+Date de fin du contrat : {{ Date_de_fin_du_contrat }}
+Date de rappel de négociation : {{ Date_de_rappel_de_négociation }}
+
+Nous vous invitons à prendre les mesures nécessaires pour organiser la négociation du contrat avant la date de rappel indiquée ci-dessus. Si vous avez des questions ou besoin d'informations supplémentaires, n'hésitez pas à nous contacter.
+
+Merci de votre attention et de votre coopération.
+
+Cordialement,
+L'équipe de {{ Nom_de_l_entreprise }}
+
+
+Cet e-mail a été généré automatiquement. Veuillez ne pas répondre à cette adresse e-mail (noreply@neopolis-dev.com).
