@@ -8,17 +8,19 @@ class Entreprise (db.Model):
     description = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     tel = db.Column(db.Integer, nullable=False)
+    color = db.Column(db.String(100), nullable=False)
 
     
     def __repr__(self):
         return f'<Entreprise {self.nom}>'
 
-    def __init__(self,nom,adresse,description,email,tel):
+    def __init__(self,nom,adresse,description,email,tel,color):
         self.nom = nom
         self.adresse = adresse
         self.description = description
         self.email=email
         self.tel=tel
+        self.color=color
 
     def serialize(self):
             return {
@@ -27,7 +29,8 @@ class Entreprise (db.Model):
                 'adresse': self.adresse, 
                 'description': self.description, 
                 'email': self.email, 
-                'tel': self.tel
+                'tel': self.tel,
+                'color': self.color
                 }
             
     def save_to_db(self):

@@ -16,6 +16,7 @@ def create_entreprise():
     description = request.json.get('description', '')
     email = request.json.get('email', '')
     tel = request.json.get('tel', '')
+    color = request.json.get('color', '')
     if len(adresse) > 10:
             return jsonify({
             "error": "adresse must be less than 10 characters!"
@@ -42,7 +43,7 @@ def create_entreprise():
         return jsonify({
             "error": 'Invalid email format. Email must contain "@" and "com"'
          }),400
-    add_entreprise(nom, adresse, description,email,tel)
+    add_entreprise(nom, adresse, description,email,tel,color)
     return jsonify({
          'message': "Entreprise created",
      }), 201
@@ -54,12 +55,13 @@ def edit_entreprise(_id_Entreprise):
     _description = request.json.get('description', '')
     _email = request.json.get('email', '')
     _tel = request.json.get('tel', '')
+    _color = request.json.get('color', '')
     if not (_id_Entreprise and _nom ):
         return jsonify({
             "error": "Please enter a valid ID and  name!"
          }), 400
 
-    if update_entreprise(_id_Entreprise, _nom, _adresse, _description,_email,_tel):
+    if update_entreprise(_id_Entreprise, _nom, _adresse, _description,_email,_tel,_color):
         return jsonify({
              'message': "Entreprise updated",
          }), 200
