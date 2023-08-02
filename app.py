@@ -21,6 +21,7 @@ app.config['MAIL_USERNAME'] = 'malek.chiha@esprit.tn'
 app.config['MAIL_PASSWORD'] = 'yooysitbqfnuqlyh'
 app.config['MAIL_USE_TLS'] = True   # Set to True for TLS
 app.config['MAIL_USE_SSL'] = False  # Set to False for SSL
+app.config['MAIL_DEFAULT_SENDER'] = 'malek.chiha@esprit.tn' 
 mail.init_app(app)
 
 

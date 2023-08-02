@@ -8,6 +8,9 @@ from User.models import UserModel
 import flask_jwt_extended 
 import random
 import string
+from mail import mail
+import secrets
+from flask_mail import Message
 
 
 def token_required(f):
@@ -29,8 +32,6 @@ def token_required(f):
  
         return f(current_user, *args, **kwargs)
     return decorator
-
-
 
 def get_all_users():
     return {'users': list(map(lambda x: x.serialize(), UserModel.query.all()))}
@@ -76,4 +77,14 @@ def generate_random_password():
     return ''.join(random.choice(characters) for i in range(password_length))
 
 
-
+def generate_reset_token():
+    token = secrets.token_urlsafe(32)  # Generate a 32-character URL-safe token
+    return token
+    
+def send_reset_email(user_email, reset_token):
+    subject = 'Password Reset Request'
+    body = f'Click the link below to reset your password:\n\n' \
+           f'http://your-app-url/reset_password/{reset_token}'
+    message = Message(subject=subject, recipients=[user_email], body=body)
+    mail.send(message)
+    

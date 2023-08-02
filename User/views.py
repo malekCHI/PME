@@ -13,7 +13,7 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 import bcrypt
-from User.utils import token_required
+from User.utils import generate_reset_token,send_reset_email
 from werkzeug.security import generate_password_hash,check_password_hash
 from User.utils import add_user,update_user,delete_user,generate_random_password
 
@@ -180,5 +180,46 @@ def get_current_user():
     })
     
     
-    
-    
+@user.post('/forgot_password')
+def forgot_password():
+    data = request.json
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'error': 'Please provide your email address'}), 400
+
+    # Check if the email belongs to a registered user
+    user = UserModel.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    # Generate a reset token and save it in the user's record
+    reset_token = generate_reset_token()
+    user.reset_token = reset_token
+    db.session.commit()
+
+    # Send the reset token to the user's email
+    send_reset_email(user.email, reset_token)
+
+    return jsonify({'message': 'Password reset email sent successfully','reset_token':reset_token}), 200
+
+
+@user.post('/reset_password/<reset_token>')
+def reset_password(reset_token):
+    data = request.json
+    password = data.get('password')
+
+    if not password:
+        return jsonify({'error': 'Please provide a new password'}), 400
+
+    # Find the user by the reset token
+    user = UserModel.query.filter_by(reset_token=reset_token).first()
+    if not user:
+        return jsonify({'error': 'Invalid reset token'}), 400
+
+    # Reset the user's password and clear the reset token
+    user.password_hash = generate_password_hash(password, method='sha256')
+    user.reset_token = None
+    db.session.commit()
+
+    return jsonify({'message': 'Password reset successfully'}), 200

@@ -14,6 +14,7 @@ class UserModel(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id_profile'))
     profile = db.relationship("ProfileModel")
     previleges = db.relationship("PrevilegeModel", secondary="user_previlege", back_populates="users")
+    reset_token = db.Column(db.String(128), unique=True)
     def __init__(self,nom,prenom,email,password_hash,description,profile_id,previleges=None):
         self.nom = nom
         self.prenom = prenom      
