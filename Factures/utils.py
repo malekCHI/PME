@@ -36,7 +36,6 @@ def create_facture(id_facture, TypeFacture, date_emission, description, prix_ht,
         return None
 
 
-
 # def create_facture(id_facture,TypeFacture,date_emission,description, prix_ht,prix_forfaitaire,total, tva, total_ttc ):
 #     facture = FactureModel(id_facture=id_facture,TypeFacture=TypeFacture, date_emission=date_emission,description=description,prix_ht=prix_ht,prix_forfaitaire=prix_forfaitaire,total=total,tva=tva,total_ttc=total_ttc)    
     
@@ -90,4 +89,3 @@ def delete_facture(_id):
 def get_factures_by_type(TypeFacture):
     factures = FactureModel.query.filter_by(TypeFacture=TypeFacture).all()
     return [facture.serialize() for facture in factures]
-

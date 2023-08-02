@@ -2,22 +2,21 @@ from flask import request
 
 # from Client.models import ClientModel
 from .models import ClientModel
-
+from.views import Entreprise
 
 def get_all_Clients():
     return {"client": list(map(lambda x: x.serialize(), ClientModel.query.all()))}
 
 
 def get_client(_id_Client):
-    return {
-        "client": list(
-            map(
-                lambda x: x.serialize(),
-                ClientModel.query.filter_by(id_client=_id_Client).first(),
-            )
-        )
-    }
+    client = ClientModel.query.filter_by(id_client=_id_Client).first()
+    if client:
+        return {"client": list(map(lambda x: x.serialize(), [client]))[0]}
+    else:
+        return {"error": "Client not found"}
 
+def get_entreprise_by_id(id_entreprise):
+    return Entreprise.query.get(id_entreprise)
 
 def is_valid_email(email):
     return "@" in email and email.endswith(".com")

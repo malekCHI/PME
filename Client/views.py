@@ -1,7 +1,10 @@
 from Client.models import ClientModel
-from Client.utils import get_all_Clients, add_client
+from Entreprise.models import Entreprise
+from Client.utils import get_all_Clients, add_client, get_client , get_entreprise_by_id
 from flask import Blueprint, request, jsonify
 from db import db
+from Client.utils import get_entreprise_by_id
+
 
 client = Blueprint("client", __name__, url_prefix="/client")
 
@@ -39,9 +42,14 @@ def get_clients():
 
     if not pages:
         if id_client:
-            return jsonify({"client": get_client(id_client)})
+            # Utilisez simplement get_client(id_client) pour obtenir le client par son ID
+            client = get_client(id_client)
+            if client:
+                return jsonify({"client": client})
+            else:
+                return jsonify({"message": "Client not found"}), 404
         else:
-            return jsonify({"client": get_all_Clients()})
+            return jsonify({"clients": get_all_Clients()})
     else:
         page = int(pages)
         if id_client:
@@ -55,13 +63,25 @@ def get_clients():
         else:
             return jsonify(
                 {
-                    "client": get_all_Clients()
+                    "clients": get_all_Clients()
                     .paginate(page, per_page, error_out=False)
                     .items
                 }
             )
 
 
+@client.get("/get_entreprise_by_client_id/<int:id_client>")
+def get_entreprise_by_client_id(id_client):
+    client_data = get_client(id_client)
+    if client_data:
+        client = ClientModel.query.get(id_client)
+        if client and client.entreprise:
+            entreprise_name = client.entreprise.nom
+            return jsonify({"entreprise_name": entreprise_name})
+        else:
+            return jsonify({"message": "Entreprise not found"}), 404
+    else:
+        return jsonify({"message": "Client not found"}), 404
 @client.put("/update/<int:client_id>")
 def update_client(client_id):
     data = request.json

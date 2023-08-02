@@ -2,14 +2,12 @@ from db import db
 from sqlalchemy import Column, Integer, String, ForeignKey
 from datetime import datetime
 from sqlalchemy.orm import relationship
-from Entreprise.models import Entreprise
-
 
 class ClientModel(db.Model):
     """Client model"""
 
     __tablename__ = "clients"
-    id_client = db.Column(db.Integer, primary_key=True)
+    id_client = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(), unique=True, nullable=False)
     adresse = db.Column(db.String(), nullable=False)
     contact = db.Column(db.String(), nullable=False)
@@ -20,9 +18,12 @@ class ClientModel(db.Model):
     email_copies = db.Column(db.String(), nullable=False)
 
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
-    # relation
-    entreprise = relationship("Entreprise", backref="Client")
+    # Relation Many-to-One avec la table "Entreprise"
+    entreprise = relationship("Entreprise", backref="client")  # Modifiez "entreprise" en "Entreprise"
 
+    # Relation One-to-Many avec la table "facture"
+    #factures_relance = db.relationship("FactureModel", backref="client", lazy=True)
+ 
     def __init__(
         self,
         nom,
