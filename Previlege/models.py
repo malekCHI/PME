@@ -19,15 +19,15 @@ class PrevilegeModel(db.Model):
         visited = visited or set()
         if self in visited:
             return {'id_previlege': self.id_previlege}
-        
+
         visited.add(self)
         return {
                 'id_previlege': self.id_previlege,
                 'nom': self.nom,
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
-                'profiles': [profile .serialize(visited) for profile  in self.profiles],
-                'users': [user .serialize(visited) for user  in self.users],
+                'profiles': list(map(lambda profile: profile.serialize(visited), self.profiles)),
+                'users': list(map(lambda user: user.serialize(visited), self.users)),
                 }
        
     def save_to_db(self):

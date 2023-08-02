@@ -9,16 +9,28 @@ from Profile.views import profiles
 from Entreprise.views import entreprise
 from Previlege.views import previlege
 from User.views import user
+from mail import mail 
 from flask_jwt_extended import (
     JWTManager
 )
 app = Flask(__name__)
+# configuration of mail
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'malek.chiha@esprit.tn'
+app.config['MAIL_PASSWORD'] = 'yooysitbqfnuqlyh'
+app.config['MAIL_USE_TLS'] = True   # Set to True for TLS
+app.config['MAIL_USE_SSL'] = False  # Set to False for SSL
+mail.init_app(app)
+
+
 CORS(app)
 load_dotenv()
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ECHO'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 
@@ -32,6 +44,10 @@ jwt = JWTManager(app)
 @app.route('/')
 def hello_world():  # put application's code here
     return 'Hello World!'
+
+
+
+
 
 
 app.register_blueprint(profiles)

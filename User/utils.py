@@ -6,6 +6,8 @@ import uuid
 from werkzeug.security import generate_password_hash
 from User.models import UserModel
 import flask_jwt_extended 
+import random
+import string
 
 
 def token_required(f):
@@ -52,6 +54,10 @@ def update_user(_id_user, _nom, _prenom, _email,_password_hash,_description,_pro
         user_to_update.password_hash = _password_hash
         user_to_update.description = _description
         user_to_update.profile_id = _profile_id
+        # Update the password hash if provided
+        if _password_hash:
+            hashed_password = generate_password_hash(_password_hash, method='sha256')
+            user_to_update.password_hash = hashed_password
         user_to_update.save_to_db()
         return True
     return False
@@ -64,7 +70,10 @@ def delete_user(_id_user):
     return False      
     
     
-
+def generate_random_password():
+    password_length = 10
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(characters) for i in range(password_length))
 
 
 
