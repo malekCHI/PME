@@ -62,7 +62,7 @@ def add_contract(
 def update_contract(contract_id):
     contract = ContractModel.query.get(contract_id)
     if contract:
-        data = request.json
+        data = request.get_json
         contract.id_client = data.get("id_client", contract.id_client)
         contract.date_debut = data.get("date_debut", contract.date_debut)
         contract.date_fin = data.get("date_fin", contract.date_fin)

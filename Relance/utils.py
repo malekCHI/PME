@@ -21,7 +21,7 @@ def send_email(to_email, subject, body):
             smtp.ehlo()
             smtp.starttls()
             smtp.login(os.getenv('EMAIL_ADDRESS', ''), os.getenv('EMAIL_PASSWORD', ''))
-            smtp.sendmail(os.getenv('EMAIL_ADDRESS'), to_email, msg.as_string())
+            smtp.sendmail(os.getenv('EMAIL_ADDRESS',''), to_email, msg.as_string())
 
     except Exception as e:
         print(f"An error occurred while sending the email: {e}")

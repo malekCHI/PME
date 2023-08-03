@@ -6,15 +6,12 @@ from datetime import datetime, timedelta
 import threading
 from Client.models import ClientModel
 
-
 relance = Blueprint("relance", __name__, url_prefix="/relance")
-
 
 @relance.get("/")
 def get_all():
     relances = RelanceModel.query.all()
     return jsonify(relances=[relance.serialize() for relance in relances])
-
 
 @relance.post("/create")
 def create_relance():
@@ -22,7 +19,6 @@ def create_relance():
     id_facture = data.get("id_facture")
     date_relance = data.get("date_relance")
     message = data.get("message")
-    
 
     if not (id_facture and date_relance and message):
         return {"error": "Please provide id_facture, date_relance, and message."}, 400
@@ -38,8 +34,13 @@ def create_relance():
             id_facture=id_facture, date_relance=date_relance, message=message
         )
         relance.save_to_db()
-        # Planifier l'envoi de l'e-mail après 1 seconde
-        threading.Timer(1, send_email, args=[to_email, "Relance de paiement", "Bonjour, vous avez une facture en attente de paiement."]).start()
+
+        # Retrieve the FactureModel corresponding to id_facture
+        facture = FactureModel.query.get(id_facture)
+
+        # Schedule the email to be sent after 1 second
+        threading.Timer(1, send_email, args=[facture.client.email_destinataire, "Relance de paiement", "Bonjour, vous avez une facture en attente de paiement."]).start()
+
         return {
             "message": "Relance created successfully.",
             "reminder_date": reminder_date.strftime("%Y-%m-%d %H:%M:%S"),

@@ -3,6 +3,7 @@ from Entreprise.models import Entreprise
 from Entreprise.utils import get_all_Entreprises, get_entreprise
 from Entreprise.utils import add_entreprise, update_entreprise, delete_entreprise
 import re
+from flask_sqlalchemy import paginate
 
 
 entreprise = Blueprint("entreprise", __name__, url_prefix="/entreprise")
@@ -52,6 +53,7 @@ def create_entreprise():
 
 @entreprise.put("/update/<int:_id_Entreprise>")
 def edit_entreprise(_id_Entreprise):
+    
     _nom = request.json.get("nom", "")
     _adresse = request.json.get("adresse", "")
     _description = request.json.get("description", "")

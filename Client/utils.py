@@ -64,7 +64,7 @@ def add_client(
 def update_client(client_id):
     client = ClientModel.query.filter_by(id_client=client_id).first()
     if client:
-        data = request.json
+        data = request.get_json
         client.nom = data.get("nom", client.nom)
         client.adresse = data.get("adresse", client.adresse)
         client.contact = data.get("contact", client.contact)

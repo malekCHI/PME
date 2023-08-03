@@ -7,12 +7,11 @@ from flask_restful import Api
 from Client.views import client
 from Contracts.views import contract
 from Paiement.views import paiement
-from flask_sqlalchemy import SQLAlchemy
 
+from Email.views import email
 # from User.views import profile
 from Entreprise.views import entreprise
 from Factures.views import facture
-from Paiement.views import paiement
 from Relance.views import relance 
 
 from Logo import upload
@@ -46,7 +45,7 @@ app.register_blueprint(facture)
 app.register_blueprint(entreprise)
 app.register_blueprint(paiement)
 app.register_blueprint(relance)
-
+app.register_blueprint(email)
 
 @app.route("/")
 def hello_world():  # put application's code here

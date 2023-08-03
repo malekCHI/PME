@@ -10,7 +10,7 @@ contract = Blueprint("contract", __name__, url_prefix="/contract")
 
 @contract.post("/create")
 def create_contract():
-    data = request.json
+    data = request.get_json
     id_client = data.get("id_client")
     date_debut = data.get("date_debut")
     date_fin = data.get("date_fin")
@@ -43,7 +43,7 @@ def get_contract():
 
 @contract.put("/update/<int:contract_id>")
 def update_contract(contract_id):
-    data = request.json
+    data = request.get_json
     id_client = data.get("id_client")
     date_debut = data.get("date_debut")
     date_fin = data.get("date_fin")
