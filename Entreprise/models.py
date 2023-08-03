@@ -15,28 +15,30 @@ class Entreprise(db.Model):
 
     creation_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
     # clients = db.relationship('Client', backref='entreprise', lazy=True)
+    color = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
         return f"<Entreprise {self.nom}>"
 
-    def __init__(self, nom, adresse, description, email, tel):
+    def __init__(self,nom,adresse,description,email,tel,color):
         self.nom = nom
         self.adresse = adresse
         self.description = description
-        self.email = email
-        self.tel = tel
+        self.email=email
+        self.tel=tel
+        self.color=color
 
     def serialize(self):
-        return {
-            "id_Entreprise": self.id_Entreprise,
-            "nom": self.nom,
-            "adresse": self.adresse,
-            "description": self.description,
-            "email": self.email,
-            "tel": self.tel,
-            "creation_date": self.creation_date.strftime("%Y-%m-%d"),
-        }
-
+            return {
+                'id_Entreprise': self.id_Entreprise,
+                'nom': self.nom,
+                'adresse': self.adresse, 
+                'description': self.description, 
+                'email': self.email, 
+                'tel': self.tel,
+                'color': self.color
+                }
+            
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

@@ -2,39 +2,55 @@ from flask import Flask, jsonify, request, render_template, redirect
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+from flask import Flask,jsonify
 from db import db
+import time 
 from flask_restful import Api
 from Client.views import client
 from Contracts.views import contract
 from Paiement.views import paiement
 
 from Email.views import email
-# from User.views import profile
+# from Profile.views import profiles
 from Entreprise.views import entreprise
 from Factures.views import facture
 from Relance.views import relance 
 
 from Logo import upload
-
+from Previlege.views import previlege
+from User.views import user
+from mail import mail 
+from flask_jwt_extended import (
+    JWTManager
+)
 app = Flask(__name__)
 app.template_folder = "templates"
+# configuration of mail
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'malek.chiha@esprit.tn'
+app.config['MAIL_PASSWORD'] = 'yooysitbqfnuqlyh'
+app.config['MAIL_USE_TLS'] = True   # Set to True for TLS
+app.config['MAIL_USE_SSL'] = False  # Set to False for SSL
+app.config['MAIL_DEFAULT_SENDER'] = 'malek.chiha@esprit.tn' 
+mail.init_app(app)
+
+
 CORS(app)
 load_dotenv()
 
 
-app.config["JWT_TOKEN_LOCATION"] = ["headers", "query_string"]
-app.config["JWT_HEADER_TYPE"] = ""
-app.config["JWT_HEADER_NAME"] = "Authorization"
-app.config["JWT_QUERY_STRING_NAME"] = "token"
-app.config["JWT_QUERY_STRING_VALUE_PREFIX"] = "Bearer"
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["PROPAGATE_EXCEPTIONS"] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
+
 
 
 api = Api(app)
 db.init_app(app)
-app.secret_key = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+app.config['SECRET_KEY'] = SECRET_KEY
+jwt = JWTManager(app)
 
 
 app.register_blueprint(contract)
@@ -52,14 +68,15 @@ def hello_world():  # put application's code here
     return "Bienvenue au Gestion Commerciale PME !"
 
 
+app.register_blueprint(profile)
+app.register_blueprint(entreprise)
+
 with app.app_context():
     db.create_all()
 # @app.before_first_request
 # def create_tables():
-# db.create_all()
-
-
-# apload_image
+#     with app.app_context():
+#         db.create_all()
 
 
 if __name__ == "__main__":
