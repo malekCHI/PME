@@ -8,7 +8,7 @@ from User.models import UserModel
 import flask_jwt_extended 
 import random
 import string
-from mail import mail
+from mail_utils import mail
 import secrets
 from flask_mail import Message
 

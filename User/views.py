@@ -7,7 +7,7 @@ import bcrypt
 from sqlalchemy.exc import IntegrityError
 from db import db
 from flask_mail import Message
-from mail import mail
+from mail_utils import mail
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity

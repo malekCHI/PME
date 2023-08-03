@@ -9,7 +9,7 @@ from Profile.views import profiles
 from Entreprise.views import entreprise
 from Previlege.views import previlege
 from User.views import user
-from mail import mail 
+from mail_utils import mail 
 from flask_jwt_extended import (
     JWTManager
 )

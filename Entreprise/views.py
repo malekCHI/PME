@@ -1,10 +1,9 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import current_user, jwt_required,get_jwt_identity
+from flask_jwt_extended import jwt_required,get_jwt_identity
 from Entreprise.models import Entreprise
 from Entreprise.utils import add_entreprise,update_entreprise,delete_entreprise
 import re
 
-from User.utils import token_required
 # from User.models import UserModel
 entreprise = Blueprint("entreprise", __name__, url_prefix="/entreprise")
 
