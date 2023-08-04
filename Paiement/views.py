@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from Factures.models import FactureModel
+
 from db import db
 from Paiement.models import PaiementModel
 from Paiement.utils import add_paiement, calculate_etat_paiement, TypeStatut
@@ -22,7 +23,7 @@ def create_paiement():
         return jsonify({"message": "La facture avec l'ID spécifié n'existe pas."}), 404
 
     # Vérifier si la facture est déjà payée
-    if facture.statut == TypeStatut.PAYEE.value:
+    if facture.status == TypeStatut.PAYEE.value:
         return jsonify({"message": "La facture est déjà payée. Impossible d'ajouter un nouveau paiement."}), 400
     # Vérifier si le montant est supérieur au montant total de la facture
     if montant > facture.total_ttc:
@@ -47,11 +48,11 @@ def create_paiement():
     # Enregistrez le paiement dans la base de données
     nouveau_paiement.save_to_db()
 
-    # Mettez à jour le statut de la facture associée en utilisant la fonction calculate_etat_paiement
-    statut = calculate_etat_paiement(facture)
+    # Mettez à jour le status de la facture associée en utilisant la fonction calculate_etat_paiement
+    status = calculate_etat_paiement(facture)
 
-    if statut is not None:
-        facture.statut = statut.value
+    if status is not None:
+        facture.status = status.value
     else:
         
      # Si la fonction retourne None, vous pouvez lever une exception si nécessaire

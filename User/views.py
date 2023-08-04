@@ -24,12 +24,13 @@ user = Blueprint("user", __name__, url_prefix="/users")
 @user.post('/register')
 def signup_user():
     try:
+        data = request.get_json()
         print(request.json)
-        nom = request.json.get('nom', None)
-        prenom = request.json.get('prenom', None)
-        email = request.json.get('email', None)
-        description = request.json.get('description', None)
-        profile_id = request.json.get('profile_id', None)
+        nom = data.get('nom', None)
+        prenom = data.get('prenom', None)
+        email = data.get('email', None)
+        description = data.get('description', None)
+        profile_id = data.get('profile_id', None)
         # previleges = request.json.get('previleges', None)
         
         if not email:
@@ -64,9 +65,10 @@ def signup_user():
 @user.post('/login')
 def login_user():
     try:
+        data = request.get_json()
         print(request.json)
-        email = request.json.get('email', None)
-        password = request.json.get('password', None)
+        email = data.get('email', None)
+        password = data.get('password', None)
         
         if not email: 
             return 'Missing email', 400
@@ -118,12 +120,13 @@ def get_user():
 
 @user.put('/update/<int:_id_user>')
 def edit_user(_id_user):
-    _nom = request.json.get('nom', None)
-    _prenom = request.json.get('prenom', None)
-    _email = request.json.get('email', None)
-    _password_hash = request.json.get('password_hash', None)
-    _description = request.json.get('description', None)
-    _profile_id = request.json.get('profile_id', None)
+    data = request.get_json()
+    _nom = data.get('nom', None)
+    _prenom = data.get('prenom', None)
+    _email = data.get('email', None)
+    _password_hash = data.get('password_hash', None)
+    _description = data.get('description', None)
+    _profile_id = data.get('profile_id', None)
 
     if not (_id_user and _nom ):
         return jsonify({
@@ -151,9 +154,10 @@ def remove_user(_id_user):
     
 @user.post('/assign_user_to_privileges')
 def assign_user_to_privileges():
+    data = request.get_json()
     try:
-        user_id = request.json.get('id_user', '')
-        previlege_id = request.json.get('previleges', [])
+        user_id = data.get('id_user', '')
+        previlege_id = data.get('previleges', [])
         
         user = UserModel.query.get(user_id)
         if not profile:
@@ -182,7 +186,7 @@ def get_current_user():
     
 @user.post('/forgot_password')
 def forgot_password():
-    data = request.json
+    data = request.get_json()
     email = data.get('email')
 
     if not email:
@@ -206,7 +210,7 @@ def forgot_password():
 
 @user.post('/reset_password/<reset_token>')
 def reset_password(reset_token):
-    data = request.json
+    data = request.get_json()
     password = data.get('password')
 
     if not password:

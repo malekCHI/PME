@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, render_template, redirect
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
-from flask import Flask,jsonify
+
 from db import db
 import time 
 from flask_restful import Api
@@ -11,7 +11,7 @@ from Contracts.views import contract
 from Paiement.views import paiement
 
 from Email.views import email
-# from Profile.views import profiles
+from Profile.views import profiles
 from Entreprise.views import entreprise
 from Factures.views import facture
 from Relance.views import relance 
@@ -20,11 +20,15 @@ from Logo import upload
 from Previlege.views import previlege
 from User.views import user
 from mail import mail 
+from flask_apscheduler import APScheduler
 from flask_jwt_extended import (
     JWTManager
 )
 app = Flask(__name__)
 app.template_folder = "templates"
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 # configuration of mail
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -57,19 +61,18 @@ app.register_blueprint(contract)
 app.register_blueprint(client)
 app.register_blueprint(upload)
 app.register_blueprint(facture)
-# app.register_blueprint(profile)
+app.register_blueprint(profiles)
 app.register_blueprint(entreprise)
 app.register_blueprint(paiement)
 app.register_blueprint(relance)
 app.register_blueprint(email)
+app.register_blueprint(user)
+app.register_blueprint(previlege)
 
 @app.route("/")
 def hello_world():  # put application's code here
     return "Bienvenue au Gestion Commerciale PME !"
 
-
-app.register_blueprint(profile)
-app.register_blueprint(entreprise)
 
 with app.app_context():
     db.create_all()

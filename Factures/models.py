@@ -1,7 +1,9 @@
 from db import db
 from datetime import datetime
 from enum import Enum
-
+from Paiement.models import PaiementModel
+from Client.models import ClientModel
+from Relance.models import RelanceModel
 class TypeFacture(Enum):
     FORFAIT = 'FORFAIT'
     JOUR_HOMME = 'JOUR_HOMME'
@@ -21,19 +23,28 @@ class FactureModel(db.Model):
     total = db.Column(db.Float, nullable=False)
     tva = db.Column(db.Float, nullable=False)
     total_ttc = db.Column(db.Float, nullable=False)
-
+    status = db.Column(db.String(), nullable=False, default = " NON_PAYEE")
+    id_client = db.Column(db.Integer, db.ForeignKey ("clients.id_client"))
+    
+    paiements = db.relationship('PaiementModel', backref = 'facture', lazy=True)
+    
     # Relationship with DescriptionModel
     descriptions = db.relationship('DescriptionModel', secondary=facture_description_association, backref='factures')
-
+    client = db.relationship('ClientModel',backref='facture',lazy=True)
+    relances = db.relationship("RelanceModel", backref="facture",lazy=True)
     def serialize(self):
         data = {
             'id_facture': self.id_facture,
+            'paiements':self.paiements,
+            'client':self.client,
             'date_emission': self.date_emission.strftime('%Y-%m-%d %H:%M:%S'),
             'TypeFacture': self.TypeFacture.value if self.TypeFacture else None,
             'total': self.total,
             'tva': self.tva,
             'total_ttc': self.total_ttc,
-            'descriptions': [desc.serialize() for desc in self.descriptions] # type: ignore
+            'status': self.status,
+            'descriptions': [desc.serialize() for desc in self.descriptions], # type: ignore
+            'status':self.status.value,
         }
         return data
 

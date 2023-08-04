@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from Factures.utils import get_all_factures, get_facture, create_facture, update_facture, delete_facture, get_factures_by_type
+from Paiement.utils import calculate_etat_paiement
 
 facture = Blueprint("facture", __name__, url_prefix="/facture")
 
@@ -24,12 +25,14 @@ def get_by_id(_id):
 def create():
     data = request.get_json()
     _id_facture = data.get("id_facture")
+    id_client = data.get("id_client")
     TypeFacture = data.get("TypeFacture")
     date_emission = data.get("date_emission")
     descriptions = data.get("descriptions")
     total = data.get("total")
     tva = data.get("tva")
     total_ttc = data.get("total_ttc")
+
 
     if not (_id_facture and TypeFacture):
         return {'Erreur': 'Veuillez fournir ID, Type du facture et les taches !'}, 400
@@ -66,15 +69,18 @@ def create():
 
     id_facture = create_facture(
         id_facture=_id_facture,
+        id_client=id_client,
         TypeFacture=TypeFacture,
         date_emission=date_emission,
         descriptions=descriptions_data,
         total=total,
         tva=tva,
         total_ttc=total_ttc,
-    )
+
+        
+        )
     
-    return {'Message': f'Facture {id_facture} créée !'}, 201
+    return {'Message': f'Facture {id_facture} crée !'}, 201
 
 @facture.put('/<int:_id>')
 def update(_id):
@@ -82,10 +88,12 @@ def update(_id):
 
     # Extract data from the request JSON
     TypeFacture = data.get("TypeFacture")
+    id_client=data.get("id_client")
     date_emission = data.get("date_emission")
     total = data.get("total")
     tva = data.get("tva")
     total_ttc = data.get("total_ttc")
+    
 
     # Check if all data is provided
     if not (TypeFacture and date_emission and total and tva and total_ttc):
@@ -128,13 +136,16 @@ def update(_id):
     # Call the update_facture function with the extracted data and _id parameter
     update_message = update_facture(
         _id_facture=_id,
+        id_client=id_client,
         TypeFacture=TypeFacture,
         date_emission=date_emission,
         descriptions=descriptions_data,
         total=total,
         tva=tva,
         total_ttc=total_ttc,
+        
     )
+    
 
     if update_message:
         return {'Message': 'Facture mise à jour avec succès !'}, 200

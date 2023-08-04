@@ -6,7 +6,7 @@ from sqlalchemy import Enum as EnumSQL
 from enum import Enum
 
 
-# Énumération pour les différents statuts de paiement
+# Énumération pour les différents statuss de paiement
 class TypeStatut(Enum):
     PAYEE = "PAYEE"
     NON_PAYEE = "NON_PAYEE"
@@ -46,13 +46,13 @@ def add_paiement(montant,id_facture, date_paiement):
     # Créer une nouvelle instance de PaiementModel avec les données fournies
     nouveau_paiement = PaiementModel(montant=montant,id_facture=id_facture, date_paiement=date_paiement)
 
-    # Calculer le statut du paiement en fonction du montant
+    # Calculer le status du paiement en fonction du montant
     if montant == 0:
-        # Si le montant du paiement est égal à zéro, le statut est "NON_PAYEE"
-        nouveau_paiement.statut = "NON_PAYEE"
+        # Si le montant du paiement est égal à zéro, le status est "NON_PAYEE"
+        nouveau_paiement.status = "NON_PAYEE"
     else:
-        # Sinon, le montant du paiement est positif, donc le statut est "PAYEE"
-        nouveau_paiement.statut = "PAYEE"
+        # Sinon, le montant du paiement est positif, donc le status est "PAYEE"
+        nouveau_paiement.status = "PAYEE"
 
     nouveau_paiement.save_to_db()
 

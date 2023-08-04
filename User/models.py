@@ -39,7 +39,7 @@ class UserModel(db.Model):
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
                 'profile_id': self.profile_id,
-                'previleges': list(map(lambda previlege: previlege.serialize(visited), self.previleges)),
+                'previleges': list(map(lambda previlege: previlege.serialize(visited), self.previleges)), # type: ignore
                 }
 
 

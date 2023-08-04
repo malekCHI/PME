@@ -13,7 +13,7 @@ Client : {{ Nom_du_client }}
 
 Veuillez examiner attentivement les informations de la facture et confirmer sa validité en cliquant sur le lien de validation ci-dessous :
 
-[Insérer le lien de validation ici]
+{{ [Insérer le lien de validation ici] }}
 
 En cas de questions ou de besoin d'assistance supplémentaire, n'hésitez pas à nous contacter. Nous vous remercions de votre coopération dans le processus de validation des factures.
 

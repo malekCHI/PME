@@ -1,6 +1,6 @@
 from Factures.models import FactureModel, DescriptionModel
 from db import db
-
+from Paiement.utils import calculate_etat_paiement
 # def add_taches_to_facture(facture_id, taches):
 #     facture = FactureModel.query.get(facture_id)
 #     if facture:
@@ -21,17 +21,23 @@ def get_facture(_id):
         return facture.serialize()
     return {'Message': 'Facture non trouvée !'}, 404
 
-def create_facture(id_facture, TypeFacture, date_emission, descriptions, total, tva, total_ttc):
+def create_facture(id_facture,id_client, TypeFacture, date_emission, descriptions, total, tva, total_ttc):
     if TypeFacture in ['FORFAIT', 'JOUR_HOMME', 'LIVRABLES']:
+        
         facture = FactureModel(
             id_facture=id_facture,
+            id_client=id_client,
             TypeFacture=TypeFacture,
             date_emission=date_emission,
             total=total,
             tva=tva,
             total_ttc=total_ttc,
+            
+            
+            
+            
         )
-
+        
         if descriptions:
             for desc in descriptions:
                 if TypeFacture == 'FORFAIT':
@@ -65,7 +71,7 @@ def create_facture(id_facture, TypeFacture, date_emission, descriptions, total, 
         return id_facture
     else:
         return None
-def update_facture(_id_facture, TypeFacture, date_emission, descriptions, total, tva, total_ttc):
+def update_facture(_id_facture, TypeFacture, date_emission, descriptions, total, tva, total_ttc,id_client):
     facture = FactureModel.query.get(_id_facture)
     if facture:
         facture.TypeFacture = TypeFacture
@@ -73,7 +79,10 @@ def update_facture(_id_facture, TypeFacture, date_emission, descriptions, total,
         facture.total = total
         facture.tva = tva
         facture.total_ttc = total_ttc
-
+        facture.id_client = id_client
+        
+        
+        
         # Clear existing descriptions
         facture.descriptions.clear()
 

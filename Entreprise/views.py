@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import current_user, jwt_required,get_jwt_identity
+from flask import Blueprint, request, jsonify, render_template
+from flask_jwt_extended import  jwt_required,get_jwt_identity
 from Entreprise.models import Entreprise
 from Entreprise.utils import add_entreprise,update_entreprise,delete_entreprise
 import re
@@ -11,14 +11,13 @@ entreprise = Blueprint("entreprise", __name__, url_prefix="/entreprise")
 
 @entreprise.post("/create")
 def create_entreprise():
-    nom = request.json.get('nom', '')
-    adresse = request.json.get('adresse', '')
-    description = request.json.get('description', '')
-    email = request.json.get('email', '')
-    tel = request.json.get('tel', '')
-    color = request.json.get('color', '')
-    if len(adresse) > 10:
-        return jsonify({"error": "adresse must be less than 10 characters!"}), 400
+    data = request.get_json()
+    nom = data.get('nom', '')
+    adresse = data.get('adresse', '')
+    description = data.get('description', '')
+    email = data.get('email', '')
+    tel = data.get('tel', '')
+    color = data.get('color', '')
     if not (nom and adresse):
         return jsonify({"error": "Please enter valid name and adresse!"}), 400
     if Entreprise.query.filter_by(nom=nom).first() is not None:
@@ -47,12 +46,13 @@ def create_entreprise():
 
 @entreprise.put("/update/<int:_id_Entreprise>")
 def edit_entreprise(_id_Entreprise):
-    _nom = request.json.get('nom', '')
-    _adresse = request.json.get('adresse', '')
-    _description = request.json.get('description', '')
-    _email = request.json.get('email', '')
-    _tel = request.json.get('tel', '')
-    _color = request.json.get('color', '')
+    data = request.get_json()
+    _nom = data.get('nom', '')
+    _adresse = data.get('adresse', '')
+    _description = data.get('description', '')
+    _email = data.get('email', '')
+    _tel = data.get('tel', '')
+    _color = data.get('color', '')
     if not (_id_Entreprise and _nom ):
         return jsonify({
             "error": "Please enter a valid ID and  name!"

@@ -7,10 +7,11 @@ previlege = Blueprint("previlege", __name__, url_prefix="/previlege")
 
 @previlege.post('/create')
 def create_previlege():
-    nom = request.json.get('nom', '')
-    description = request.json.get('description', '')
-    creation_date = request.json.get('creation_date', '')
-    profiles = request.json.get('profiles', [])
+    data = request.get_json()
+    nom = data.get('nom', '')
+    description = data.get('description', '')
+    creation_date = data.get('creation_date', '')
+    profiles = data.get('profiles', [])
     if len(description) < 10:
             return jsonify({
             "error": "description must be less than 10 characters!"
@@ -48,9 +49,10 @@ def get_previlege():
 
 @previlege.put('/update/<int:_id_previlege>')
 def edit_previlege(_id_previlege):
-    _nom = request.json.get('nom', '')
-    _description = request.json.get('description', '')
-    _creation_date = request.json.get('creation_date', '')
+    data = request.get_json()
+    _nom = data.get('nom', '')
+    _description = data.get('description', '')
+    _creation_date = data.get('creation_date', '')
 
     if not (_id_previlege and _nom ):
         return jsonify({
@@ -84,8 +86,9 @@ def remove_previlege(_id_previlege):
 @previlege.post('/assign_privileges_to_profile')
 def assign_privileges_to_profile():
     try:
-        id_previlege = request.json.get('id_previlege', '')
-        profiles = request.json.get('profiles', [])
+        data = request.get_json()
+        id_previlege = data.get('id_previlege', '')
+        profiles = data.get('profiles', [])
         previlege = PrevilegeModel.query.get(id_previlege)
         if not previlege:
             return 'previlege not found', 404

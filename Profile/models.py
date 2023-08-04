@@ -26,7 +26,7 @@ class ProfileModel(db.Model):
                 'nom': self.nom,
                 'description': self.description,
                 'creation_date': self.creation_date.strftime("%d-%b-%Y"),
-                'previleges': list(map(lambda previlege: previlege.serialize(visited), self.previleges)),
+                'previleges': list(map(lambda previlege: previlege.serialize(visited), self.previleges)), # type: ignore
                 }
        
     def save_to_db(self):

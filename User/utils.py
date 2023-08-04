@@ -16,22 +16,40 @@ from flask_mail import Message
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
+        if 'x-access-tokens' not in request.headers:
+            return jsonify({'message': 'A valid token is missing'}), 401
+
         token = request.headers['x-access-tokens']
-        if not token:
-           return jsonify({'message': 'a valid token is missing'})
-       
-        if 'x-access-tokens' in request.headers:
-           token = request.headers['x-access-tokens']
-           print(token)
-           try:
-                data = flask_jwt_extended.decode_token(token)
-                print(data)
-                current_user = UserModel.query.filter_by(id_user=data['identity']['id_user']).first()
-           except:
-                return jsonify({'message': 'token is invalid'})
- 
+
+        try:
+            data = flask_jwt_extended.decode_token(token)
+            current_user = UserModel.query.get(data['identity']['id_user'])
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Invalid token'}), 401
+        except Exception as e:
+            return jsonify({'message': 'Error decoding token: {}'.format(str(e))}), 401
+
         return f(current_user, *args, **kwargs)
     return decorator
+    # def decorator(*args, **kwargs):
+    #     token = request.headers['x-access-tokens']
+    #     if not token:
+    #        return jsonify({'message': 'a valid token is missing'})
+       
+    #     if 'x-access-tokens' in request.headers:
+    #        token = request.headers['x-access-tokens']
+    #        print(token)
+    #        try:
+    #             data = flask_jwt_extended.decode_token(token)
+    #             print(data)
+    #             current_user = UserModel.query.filter_by(id_user=data['identity']['id_user']).first()
+    #        except:
+    #             return jsonify({'message': 'token is invalid'})
+ 
+    #     return f(current_user, *args, **kwargs)
+    # return decorator
 
 def get_all_users():
     return {'users': list(map(lambda x: x.serialize(), UserModel.query.all()))}

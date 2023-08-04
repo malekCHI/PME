@@ -3,7 +3,7 @@ from Entreprise.models import Entreprise
 from Client.utils import get_all_Clients, add_client, get_client , get_entreprise_by_id
 from flask import Blueprint, request, jsonify
 from db import db
-from flask_sqlalchemy import paginate
+# from flask_sqlalchemy import paginate
 from Client.utils import get_entreprise_by_id
 
 
@@ -12,7 +12,7 @@ client = Blueprint("client", __name__, url_prefix="/client")
 
 @client.post("/create")
 def create_client():
-    data = request.get_json
+    data = request.get_json()
     nom = data.get("nom")
     adresse = data.get("adresse")
     contact = data.get("contact")
@@ -57,7 +57,7 @@ def get_clients():
             return jsonify(
                 {
                     "client": get_client(id_client)
-                    .paginate(page, per_page, error_out=False)
+                    .paginate(page, per_page, error_out=False)  # type: ignore
                     .items
                 }
             )
@@ -65,7 +65,7 @@ def get_clients():
             return jsonify(
                 {
                     "clients": get_all_Clients()
-                    .paginate(page, per_page, error_out=False)
+                    .paginate(page, per_page, error_out=False) # type: ignore
                     .items
                 }
             )
@@ -85,7 +85,7 @@ def get_entreprise_by_client_id(id_client):
         return jsonify({"message": "Client not found"}), 404
 @client.put("/update/<int:client_id>")
 def update_client(client_id):
-    data = request.get_json
+    data = request.get_json()
     nom = data.get("nom","")
     adresse = data.get("adresse", "")
     contact = data.get("contact", "")

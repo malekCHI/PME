@@ -62,3 +62,5 @@ def generate_validation_email(data: Dict[str, str], recipient_email: str):
     subject = 'Validation de la facture - ' + template_data['Numéro_de_facture'] + ' - ' + template_data['Nom_de_l_entreprise']
     email_content = render_email_template(template_path, template_data)
     generate_email(subject, email_content, recipient_email)
+
+    

@@ -7,9 +7,10 @@ profiles = Blueprint("profiles", __name__, url_prefix="/profiles")
 
 @profiles.post('/create')
 def create_profile():
-    nom = request.json.get('nom', '')
-    description = request.json.get('description', '')
-    creation_date = request.json.get('creation_date', '')
+    data = request.get_json()
+    nom = data.get('nom', '')
+    description = data.get('description', '')
+    creation_date = data.get('creation_date', '')
     # previleges = request.json.get('previleges', [])
     if len(description) > 10:
             return jsonify({
@@ -48,9 +49,10 @@ def get_profile():
 
 @profiles.put('/update/<int:_id_profile>')
 def edit_profile(_id_profile):
-    _nom = request.json.get('nom', '')
-    _description = request.json.get('description', '')
-    _creation_date = request.json.get('creation_date', '')
+    data = request.get_json()
+    _nom = data.get('nom', '')
+    _description = data.get('description', '')
+    _creation_date = data.get('creation_date', '')
 
     if not (_id_profile and _nom ):
         return jsonify({
@@ -82,8 +84,9 @@ def remove_profile(_id_profile):
 @profiles.post('/assign_profile_to_privileges')
 def assign_profile_to_privileges():
     try:
-        id_profile = request.json.get('id_profile', '')
-        privileges_id = request.json.get('previleges', [])
+        data = request.get_json()
+        id_profile = data.get('id_profile', '')
+        privileges_id = data.get('previleges', [])
         
         profile = ProfileModel.query.get(id_profile)
         if not profile:
