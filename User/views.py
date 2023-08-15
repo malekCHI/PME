@@ -16,11 +16,22 @@ import bcrypt
 from User.utils import generate_reset_token,send_reset_email
 from werkzeug.security import generate_password_hash,check_password_hash
 from User.utils import add_user,update_user,delete_user,generate_random_password
-
+import random
+import string
 profile = Blueprint("profile", __name__, url_prefix="/profile")
 user = Blueprint("user", __name__, url_prefix="/users")
 
 
+def generate_random_password(length=12):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    disallowed_characters = ["'",'/','.',',','~','"','`',';',':','\\', '(', ')', '|', '[', ']', '{', '}', '=', '+', '*', '?', '$', '^', '&','>','<']
+    
+    while True:
+        password = ''.join(random.choice(characters) for _ in range(length))
+        if all(char not in password for char in disallowed_characters):
+            return password
+def generate_password_hash_scrypt(password):
+    return generate_password_hash(password, method='scrypt')
 @user.post('/register')
 def signup_user():
     try:
@@ -36,7 +47,7 @@ def signup_user():
             return 'Missing email', 400
         # Generate a random password for the user
         random_password  = generate_random_password()
-        password_hashed =generate_password_hash(random_password, method='sha256')
+        password_hashed =generate_password_hash_scrypt(random_password)
         profile = ProfileModel.query.get(profile_id)
         if not profile:
             return 'Profile not found', 400
@@ -48,7 +59,7 @@ def signup_user():
             sender='malek.chiha@esprit.tn',
             recipients=recipients
         )
-        msg.body = f'Hello {prenom} {nom},\n\nThank you for signing up on our plateforme! Your password is: {random_password}'
+        msg.body = f'Hello {prenom} {nom},\n\nWelcome to our plateforme!\n Here he is your password : {random_password} and you will be logging in with an {profile.nom} profile '
 
         mail.send(msg)
 
@@ -64,7 +75,6 @@ def signup_user():
 @user.post('/login')
 def login_user():
     try:
-        print(request.json)
         email = request.json.get('email', None)
         password = request.json.get('password', None)
         
@@ -80,7 +90,7 @@ def login_user():
         if 'email' in session and session['email'] == email:
             return {'message': 'You are already logged in', 'email': email}
         session['email'] = email
-        print(f"Provided password: {password}")
+        print("Compare passwords: ",check_password_hash(user.password_hash,password))
         if check_password_hash(user.password_hash,password):
         # Verify the provided password
             access_token = create_access_token(identity={"id_user": user.id_user})

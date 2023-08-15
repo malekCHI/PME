@@ -1,4 +1,4 @@
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import os
 from flask import Flask,jsonify
@@ -9,11 +9,14 @@ from Profile.views import profiles
 from Entreprise.views import entreprise
 from Previlege.views import previlege
 from User.views import user
-from mail_utils import mail 
+from mail_utils import mail
 from flask_jwt_extended import (
     JWTManager
 )
 app = Flask(__name__)
+app.config["CORS_HEADERS"] = "Content-Type"
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+
 # configuration of mail
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -25,7 +28,7 @@ app.config['MAIL_DEFAULT_SENDER'] = 'malek.chiha@esprit.tn'
 mail.init_app(app)
 
 
-CORS(app)
+
 load_dotenv()
 
 
