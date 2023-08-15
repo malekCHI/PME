@@ -12,14 +12,14 @@ def get_all_Entreprises():
 def get_entreprise(_id_Entreprise):
     return {'entreprise': list(map(lambda x: x.serialize(), Entreprise.query.filter_by(_id_Entreprise=_id_Entreprise).first()))}
 next_available_id = 1
-def add_entreprise(nom, adresse, description,email,tel,color,lien_logo):
+def add_entreprise(nom, adresse, description,email,tel,lien_logo):
     max_id = db.session.query(func.max(Entreprise.id_Entreprise)).scalar()
     next_id = max_id + 1 if max_id is not None else 1
-    entreprise = Entreprise(id_Entreprise=next_id,nom=nom,adresse=adresse,description=description,email=email,tel=tel,color=color,lien_logo=lien_logo) 
+    entreprise = Entreprise(id_Entreprise=next_id,nom=nom,adresse=adresse,description=description,email=email,tel=tel,lien_logo=lien_logo) 
     entreprise.save_to_db()
     
     
-def update_entreprise(_id_Entreprise, _nom,_adresse,_description,_email,_tel,_color,_lien_logo):
+def update_entreprise(_id_Entreprise, _nom,_adresse,_description,_email,_tel,_lien_logo):
     entreprise_to_update = Entreprise.query.filter_by(id_Entreprise=_id_Entreprise).first()
     if entreprise_to_update:
         entreprise_to_update.nom = _nom
@@ -27,7 +27,6 @@ def update_entreprise(_id_Entreprise, _nom,_adresse,_description,_email,_tel,_co
         entreprise_to_update.description = _description
         entreprise_to_update.email = _email
         entreprise_to_update.tel = _tel
-        entreprise_to_update.color = _color
         entreprise_to_update.lien_logo = _lien_logo
         entreprise_to_update.save_to_db()
         return True
