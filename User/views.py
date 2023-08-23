@@ -8,7 +8,9 @@ from sqlalchemy.exc import IntegrityError
 from db import db
 from flask_mail import Message
 from mail_utils import mail
-from flask_jwt_extended import (
+import json
+from datetime import datetime, timedelta, timezone
+from flask_jwt_extended import (get_jwt,
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
@@ -41,6 +43,7 @@ def signup_user():
         email = request.json.get('email', None)
         description = request.json.get('description', None)
         profile_id = request.json.get('profile_id', None)
+        reset_token = request.json.get('reset_token', None)
         # previleges = request.json.get('previleges', None)
         
         if not email:
@@ -51,7 +54,7 @@ def signup_user():
         profile = ProfileModel.query.get(profile_id)
         if not profile:
             return 'Profile not found', 400
-        add_user(nom, prenom, email,password_hashed, description, profile_id)  # Pass the password_hash
+        add_user(nom, prenom, email,password_hashed, description, profile_id,reset_token)  # Pass the password_hash
         # Send the confirmation email with the generated password
         recipients = [email]
         msg = Message(
@@ -60,9 +63,7 @@ def signup_user():
             recipients=recipients
         )
         msg.body = f'Hello {prenom} {nom},\n\nWelcome to our plateforme!\n Here he is your password : {random_password} and you will be logging in with an {profile.nom} profile '
-
         mail.send(msg)
-
         return {"message": "User added successfully"}, 200
     except IntegrityError:
         # the rollback func reverts the changes made to the db
@@ -72,6 +73,22 @@ def signup_user():
         return 'Provide an Email and Password in JSON format in the request body', 400
 
 
+@user.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            data = response.get_json()
+            if type(data) is dict:
+                data["access_token"] = access_token
+                response.data = json.dumps(data)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        return response
 @user.post('/login')
 def login_user():
     try:
@@ -93,8 +110,9 @@ def login_user():
         print("Compare passwords: ",check_password_hash(user.password_hash,password))
         if check_password_hash(user.password_hash,password):
         # Verify the provided password
-            access_token = create_access_token(identity={"id_user": user.id_user})
-            return {"access_token": access_token,'email': email,'password': password}, 200
+        #    access_token = create_access_token(identity=UserModel['user.id_user'])
+           access_token = create_access_token(identity={"id_user": user.id_user})
+           return {"access_token": access_token,'email': email,'password': password}, 200
         else:
             return 'Invalid Login Info!', 400
     except AttributeError:
@@ -134,13 +152,14 @@ def edit_user(_id_user):
     _password_hash = request.json.get('password_hash', None)
     _description = request.json.get('description', None)
     _profile_id = request.json.get('profile_id', None)
+    _reset_token = request.json.get('reset_token', None)
 
     if not (_id_user and _nom ):
         return jsonify({
             "error": "Please enter a valid ID and  name!"
          }), 400
           
-    if update_user(_id_user, _nom,_prenom,_email,_password_hash, _description,_profile_id):
+    if update_user(_id_user, _nom,_prenom,_email,_password_hash, _description,_profile_id,_reset_token):
         return jsonify({'message': "user updated",}), 200
     else:
         return jsonify({'error': "No user found with the given ID!"}), 404
@@ -183,11 +202,15 @@ def assign_user_to_privileges():
 @user.get("/currentuser")
 @jwt_required()
 def get_current_user():
-    user_id = get_jwt_identity()
+    id_user = get_jwt_identity()
+    print(id_user)
     return jsonify({
         "message": "successfully retrieved user profile",
-        "data": user_id
+        "user": list(map(lambda x: x.serialize(), UserModel.query.filter_by(id_user=44))),
+        "data": id_user
     })
+ 
+
     
     
 @user.post('/forgot_password')
@@ -203,24 +226,26 @@ def forgot_password():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    # Generate a reset token and save it in the user's record
+   # Generate a reset token and save it in the user's record
     reset_token = generate_reset_token()
     user.reset_token = reset_token
     db.session.commit()
 
     # Send the reset token to the user's email
-    send_reset_email(user.email, reset_token)
+    send_reset_email(user.email)
 
     return jsonify({'message': 'Password reset email sent successfully','reset_token':reset_token}), 200
 
 
-@user.post('/reset_password/<reset_token>')
-def reset_password(reset_token):
+@user.post('/reset_password')
+def reset_password():
+    reset_token = request.headers.get('resetToken')
+    print("Received Reset Token:", reset_token)
     data = request.json
     password = data.get('password')
 
-    if not password:
-        return jsonify({'error': 'Please provide a new password'}), 400
+    if not password or not reset_token:
+        return jsonify({'error': 'Please provide a new password and reset_token'}), 400
 
     # Find the user by the reset token
     user = UserModel.query.filter_by(reset_token=reset_token).first()
@@ -231,5 +256,9 @@ def reset_password(reset_token):
     user.password_hash = generate_password_hash(password, method='sha256')
     user.reset_token = None
     db.session.commit()
-
     return jsonify({'message': 'Password reset successfully'}), 200
+
+
+
+
+

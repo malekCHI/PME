@@ -41,12 +41,12 @@ def get_user(_id_user):
     return {'user': list(map(lambda x: x.serialize(), UserModel.query.filter_by(id_user=_id_user).first()))}
 
 
-def add_user(nom, prenom, email,password_hash,description,profile_id):
-    user = UserModel(nom=nom,prenom=prenom,email=email,password_hash=password_hash,description=description,profile_id=profile_id) 
+def add_user(nom, prenom, email,password_hash,description,profile_id,reset_token):
+    user = UserModel(nom=nom,prenom=prenom,email=email,password_hash=password_hash,description=description,profile_id=profile_id,reset_token=reset_token) 
     user.save_to_db()
     
     
-def update_user(_id_user, _nom, _prenom, _email,_password_hash,_description,_profile_id):
+def update_user(_id_user, _nom, _prenom, _email,_password_hash,_description,_profile_id,_reset_token):
     user_to_update = UserModel.query.filter_by(id_user=_id_user).first()
     if user_to_update:
         user_to_update.nom = _nom
@@ -55,6 +55,7 @@ def update_user(_id_user, _nom, _prenom, _email,_password_hash,_description,_pro
         user_to_update.password_hash = _password_hash
         user_to_update.description = _description
         user_to_update.profile_id = _profile_id
+        user_to_update.reset_token = _reset_token
         # Update the password hash if provided
         if _password_hash:
             hashed_password = generate_password_hash(_password_hash, method='sha256')
@@ -81,10 +82,17 @@ def generate_reset_token():
     token = secrets.token_urlsafe(32)  # Generate a 32-character URL-safe token
     return token
     
-def send_reset_email(user_email, reset_token):
+# def send_reset_email(user_email, reset_token):
+#     subject = 'Password Reset Request'
+#     body = f'Click the link below to reset your password:\n\n' \
+#            f'http://localhost:3000/pages/reset-password/reset-password3/{reset_token}'
+#     message = Message(subject=subject, recipients=[user_email], body=body)
+#     mail.send(message)
+    
+def send_reset_email(user_email):
     subject = 'Password Reset Request'
-    body = f'Click the link below to reset your password:\n\n' \
-           f'http://your-app-url/reset_password/{reset_token}'
+    reset_link = f'http://localhost:3000/pages/reset-password/reset-password3'
+    body = f'Click the link below to reset your password:\n\n{reset_link}'
     message = Message(subject=subject, recipients=[user_email], body=body)
     mail.send(message)
     
