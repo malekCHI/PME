@@ -5,6 +5,7 @@ import time
 import uuid
 from werkzeug.security import generate_password_hash
 from User.models import UserModel
+from Entreprise.models import Entreprise
 import flask_jwt_extended 
 import random
 import string
@@ -46,20 +47,15 @@ def add_user(nom, prenom, email,password_hash,description,profile_id,reset_token
     user.save_to_db()
     
     
-def update_user(_id_user, _nom, _prenom, _email,_password_hash,_description,_profile_id,_reset_token):
+def update_user(_id_user, _nom, _prenom, _email,_description,_profile_id,_reset_token):
     user_to_update = UserModel.query.filter_by(id_user=_id_user).first()
     if user_to_update:
         user_to_update.nom = _nom
         user_to_update.prenom = _prenom
         user_to_update.email = _email
-        user_to_update.password_hash = _password_hash
         user_to_update.description = _description
         user_to_update.profile_id = _profile_id
         user_to_update.reset_token = _reset_token
-        # Update the password hash if provided
-        if _password_hash:
-            hashed_password = generate_password_hash(_password_hash, method='sha256')
-            user_to_update.password_hash = hashed_password
         user_to_update.save_to_db()
         return True
     return False

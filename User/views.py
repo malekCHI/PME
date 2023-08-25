@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify,session
 from User.models import UserModel
+from Entreprise.models import Entreprise
 from Profile.models import ProfileModel
 from Previlege.models import PrevilegeModel
 from passlib.hash import bcrypt
@@ -149,7 +150,6 @@ def edit_user(_id_user):
     _nom = request.json.get('nom', None)
     _prenom = request.json.get('prenom', None)
     _email = request.json.get('email', None)
-    _password_hash = request.json.get('password_hash', None)
     _description = request.json.get('description', None)
     _profile_id = request.json.get('profile_id', None)
     _reset_token = request.json.get('reset_token', None)
@@ -159,7 +159,7 @@ def edit_user(_id_user):
             "error": "Please enter a valid ID and  name!"
          }), 400
           
-    if update_user(_id_user, _nom,_prenom,_email,_password_hash, _description,_profile_id,_reset_token):
+    if update_user(_id_user, _nom,_prenom,_email, _description,_profile_id,_reset_token):
         return jsonify({'message': "user updated",}), 200
     else:
         return jsonify({'error': "No user found with the given ID!"}), 404
@@ -199,17 +199,44 @@ def assign_user_to_privileges():
         db.session.rollback()
         return str(e), 500
 
+# @user.get("/currentuser")
+# @jwt_required()
+# def get_current_user():
+#     id_user = get_jwt_identity()
+#     print(id_user)
+#     return jsonify({
+#         "message": "successfully retrieved user profile",
+#         "user": list(map(lambda x: x.serialize(), UserModel.query.filter_by(id_user=id_user))),
+#         "data": id_user
+#     })
+ 
 @user.get("/currentuser")
 @jwt_required()
 def get_current_user():
-    id_user = get_jwt_identity()
-    print(id_user)
-    return jsonify({
-        "message": "successfully retrieved user profile",
-        "user": list(map(lambda x: x.serialize(), UserModel.query.filter_by(id_user=44))),
-        "data": id_user
-    })
- 
+    current_user = get_jwt_identity()  # Assuming this contains the JWT identity payload
+
+    user_id = current_user.get('id_user')  # Extract the user ID from the payload
+    if user_id is None:
+        return jsonify({"message": "User ID not found in JWT identity"}), 400
+
+    user = UserModel.query.filter_by(id_user=user_id).first()
+    if user:
+        user_data = {
+            "id_user": user.id_user,
+            "nom": user.nom,
+            "prenom": user.prenom,
+            "email": user.email,
+            "description": user.description,
+            "creation_date": user.creation_date,
+            "profile_id": user.profile_id
+        }
+        return jsonify({
+            "message": "successfully retrieved user profile",
+            "user": user_data
+        })
+    else:
+        return jsonify({"message": "User not found"}), 404
+     
 
     
     
@@ -257,6 +284,45 @@ def reset_password():
     user.reset_token = None
     db.session.commit()
     return jsonify({'message': 'Password reset successfully'}), 200
+
+@user.post('/assign_user_to_enterprises')
+def assign_user_to_enterprises():
+    try:
+        data = request.json
+        id_user = data.get('id_user')
+        enterprise_ids = request.json.get('enterprises', [])
+
+        if id_user is None or enterprise_ids is None:
+            return {"error": "Missing required data"}, 400
+
+        user = UserModel.query.get(id_user)
+        if not user:
+            return {"error": "User not found"}, 404
+
+        enterprises = Entreprise.query.filter(Entreprise.id_Entreprise.in_(enterprise_ids)).all()
+        if not enterprises:
+            return {"error": "Enterprises not found"}, 404
+        print("User:", user)
+        print("Enterprises:", enterprises)
+
+        # Update user's enterprises
+        # user.entreprises = entreprises
+
+        # Print user.entreprises before committing
+        print("User Enterprises before commit:", user.entreprises)
+        user.entreprises = enterprises
+        # user.entreprises.append(enterprises)  # Assign the first entreprise
+        db.session.flush()
+        db.session.commit()
+
+        # Print user.entreprises after committing
+        print("User Enterprises after commit:", user.entreprises)
+
+        return {"message": "Enterprises assigned to user successfully"}, 200
+
+    except Exception as e:
+        db.session.rollback()  # Rollback changes in case of error
+        return {"error": str(e)}, 500
 
 
 

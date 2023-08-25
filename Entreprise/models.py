@@ -11,8 +11,10 @@ class Entreprise (db.Model):
     tel = db.Column(db.Integer, nullable=False)
     lien_logo = db.Column(db.String(255), nullable=False)
     creation_date = db.Column(db.DateTime, default=func.now()) 
-
-
+    # Adding the foreign key column to reference the user
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id_user'),nullable=True)
+    # Establishing the relationship with the parent table
+    user = db.relationship("UserModel", back_populates="entreprises")
     
     def __repr__(self):
         return f'<Entreprise {self.nom}>'

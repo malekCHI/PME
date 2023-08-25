@@ -14,8 +14,9 @@ class UserModel(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id_profile'))
     profile = db.relationship("ProfileModel")
     previleges = db.relationship("PrevilegeModel", secondary="user_previlege", back_populates="users")
+    entreprises = db.relationship("Entreprise", back_populates="user")
     reset_token = db.Column(db.String(128), unique=True,nullable=True)
-    def __init__(self,nom,prenom,email,password_hash,description,profile_id,reset_token,previleges=None):
+    def __init__(self,nom,prenom,email,password_hash,description,profile_id,reset_token,previleges=None,entreprises=None):
         self.nom = nom
         self.prenom = prenom      
         self.email = email
@@ -23,6 +24,7 @@ class UserModel(db.Model):
         self.description = description
         self.profile_id = profile_id 
         self.previleges = []   
+        self.entreprises=[]
         self.reset_token= reset_token     
         
     def serialize(self,visited=None):
@@ -42,6 +44,7 @@ class UserModel(db.Model):
                 'profile_id': self.profile_id,
                 'reset_token': self.reset_token,
                 'previleges': list(map(lambda previlege: previlege.serialize(visited), self.previleges)),
+                'entreprises': list(map(lambda entreprise: entreprise.serialize(), self.entreprises)),
                 }
 
 
