@@ -4,39 +4,42 @@ from dotenv import load_dotenv
 import os
 
 from db import db
-import time 
+import time
 from flask_restful import Api
 from Client.views import client
 from Contracts.views import contract
 from Paiement.views import paiement
-
+from Mail.views import eemail
+from TaskList.views import task
 from Email.views import email
 from Profile.views import profiles
 from Entreprise.views import entreprise
 from Factures.views import facture
-from Relance.views import relance 
-
+from Relance.views import relance
+from Chiffres_D_affaires.views import cda
 from Logo import upload
 from Previlege.views import previlege
 from User.views import user
-from mail import mail 
+from mail import mail
+
 from flask_apscheduler import APScheduler
 from flask_jwt_extended import (
     JWTManager
 )
 app = Flask(__name__)
-app.template_folder = "templates"
+
+app.template_folder = "./Mail/template"
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 # configuration of mail
-app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.office365.com'
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = 'malek.chiha@esprit.tn'
-app.config['MAIL_PASSWORD'] = 'yooysitbqfnuqlyh'
+app.config['MAIL_USERNAME'] = 'carryusvayne@hotmail.fr'
+app.config['MAIL_PASSWORD'] = '50Aloulou007'
 app.config['MAIL_USE_TLS'] = True   # Set to True for TLS
 app.config['MAIL_USE_SSL'] = False  # Set to False for SSL
-app.config['MAIL_DEFAULT_SENDER'] = 'malek.chiha@esprit.tn' 
+app.config['MAIL_DEFAULT_SENDER'] = 'carryusvayne@hotmail.fr'
 mail.init_app(app)
 
 
@@ -47,7 +50,6 @@ load_dotenv()
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
-
 
 
 api = Api(app)
@@ -68,6 +70,9 @@ app.register_blueprint(relance)
 app.register_blueprint(email)
 app.register_blueprint(user)
 app.register_blueprint(previlege)
+app.register_blueprint(cda)
+app.register_blueprint(task)
+
 
 @app.route("/")
 def hello_world():  # put application's code here

@@ -1,8 +1,42 @@
 from .models import ContractModel
 from flask import request
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import timedelta
+from datetime import datetime, timedelta
+from typing import Dict
+from jinja2 import Template
+from sqlalchemy import event
+from sqlalchemy.orm import Session
+from db import db
+from datetime import datetime
+from operator import itemgetter
 
+def find_closest_expiring_contract(contracts):
+    """
+    Finds the closest expiring contract based on the date_fin attribute.
+    
+    Parameters:
+    - contracts: List of ContractModel objects
+    
+    Returns:
+    - The closest expiring ContractModel object
+    """
+    closest_contract = None
+    closest_date = None
+    
+    for contract in contracts:
+        if closest_date is None or contract.date_fin < closest_date:
+            closest_date = contract.date_fin
+            closest_contract = contract
+            
+    return closest_contract
 
 def get_all_contracts():
+    # type: ignore
     return {"contracts": list(map(lambda x: x.serialize(), ContractModel.query.all()))}
 
 
@@ -81,3 +115,61 @@ def update_contract(contract_id):
         return {"message": "Contract updated successfully"}
     else:
         return {"error": "Contract not found"}
+
+
+def send_email(to_email, subject, body):
+    try:
+        print("Trying to send email...")
+        msg = MIMEMultipart()
+        msg["From"] = os.getenv("EMAIL_ADDRESS")
+        msg["To"] = to_email
+        msg["Subject"] = subject
+
+        msg.attach(MIMEText(body, "plain"))
+
+        # Connexion au serveur SMTP
+        with smtplib.SMTP("smtp.office365.com", 587) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.login(os.getenv("EMAIL_ADDRESS", ""),
+                       os.getenv("EMAIL_PASSWORD", ""))
+            smtp.sendmail(os.getenv("EMAIL_ADDRESS", ''),
+                          to_email, msg.as_string())
+
+        print("Email envoyé successivement")
+
+    except Exception as e:
+        print(f"An error occurred while sending the email: {e}")
+        raise  # Raise the exception to propagate it to the calling code
+
+
+def schedule_email(to_email, subject, data, date_rappel):
+    def render_email_template(template_path, data):
+        with open(template_path, 'r', encoding='utf-8') as file:
+            template_str = file.read()
+        template = Template(template_str)
+        result = template.render({
+            "Nom": "John Doe",
+            "Numero_du_contrat": "12345",
+            "Nom_du_client": "ABC Corp",
+            "Date_limite": "2023-08-31",
+        })
+        return result
+
+    template_data: Dict[str, str] = data
+    template_path = 'Contracts/Template/NegoContrat.txt'
+    subject = 'Alerte - Date limite de nouvelle négociation de contrat approchant'
+    email_content = render_email_template(template_path, template_data)
+
+    send_time = date_rappel
+
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(
+        send_email,
+        args=[to_email, subject, email_content],
+        trigger="date",
+        run_date=send_time,
+        id=str(to_email),
+        max_instances=1,
+    )
+    scheduler.start()
