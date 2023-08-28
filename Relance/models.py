@@ -12,7 +12,7 @@ class RelanceModel(db.Model):
 
 
     # Relation One-to-Many avec la table "RelanceModel"
-    relances = db.relationship("RelanceModel", backref="facture", lazy=True)
+    #relances = db.relationship("RelanceModel", backref="facture", lazy=True)
     # Relation Many-to-One avec la table "FactureModel" avec le paramètre overlaps
     #facture_relance = db.relationship("FactureModel", backref="relances", overlaps="facture")
 

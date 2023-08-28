@@ -4,10 +4,12 @@ from flask import request
 from .models import ClientModel
 from.views import Entreprise
 
+# def get_all_Clients():
+#     return {"client": list(map(lambda x: x.serialize(), ClientModel.query.all()))}
+
 def get_all_Clients():
-    return {"client": list(map(lambda x: x.serialize(), ClientModel.query.all()))}
-
-
+    clients = ClientModel.query.all()
+    return [client.serialize() for client in clients]
 def get_client(_id_Client):
     client = ClientModel.query.filter_by(id_client=_id_Client).first()
     if client:
@@ -60,7 +62,16 @@ def add_client(
     )
     client.save_to_db()
 
-
+def delete_client(client_id):
+    client = ClientModel.query.filter_by(id_client=client_id).first()
+    
+    if client:
+        client.delete_from_db()
+        return {"message": "Client deleted successfully"}
+    else:
+        return {"error": "Client not found"}
+    client.save_to_db()
+    
 def update_client(client_id):
     client = ClientModel.query.filter_by(id_client=client_id).first()
     if client:

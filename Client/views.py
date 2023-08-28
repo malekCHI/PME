@@ -16,11 +16,14 @@ def create_client():
     adresse = data.get("adresse")
     contact = data.get("contact")
     id_Entreprise = data.get("id_Entreprise")
+
     frequence_relance = data.get("frequence_relance")
     email_destinataire = data.get("email_destinataire")
     email_copies = data.get("email_copies")
 
+
     client = ClientModel(
+        
         nom=nom,
         adresse=adresse,
         contact=contact,
@@ -42,33 +45,21 @@ def get_clients():
 
     if not pages:
         if id_client:
-            # Utilisez simplement get_client(id_client) pour obtenir le client par son ID
+            # Utilize get_client(id_client) to get the client by its ID
             client = get_client(id_client)
             if client:
                 return jsonify({"client": client})
             else:
                 return jsonify({"message": "Client not found"}), 404
         else:
+            # Fetch all clients without pagination
             return jsonify({"clients": get_all_Clients()})
     else:
         page = int(pages)
-        if id_client:
-            return jsonify(
-                {
-                    "client": get_client(id_client)
-                    .paginate(page, per_page, error_out=False)
-                    .items
-                }
-            )
-        else:
-            return jsonify(
-                {
-                    "clients": get_all_Clients()
-                    .paginate(page, per_page, error_out=False)
-                    .items
-                }
-            )
-
+        # Fetch clients with pagination
+        return jsonify(
+            {"clients": get_all_Clients().paginate(page, per_page, error_out=False).items}
+        )
 
 @client.get("/get_entreprise_by_client_id/<int:id_client>")
 def get_entreprise_by_client_id(id_client):
@@ -82,6 +73,23 @@ def get_entreprise_by_client_id(id_client):
             return jsonify({"message": "Entreprise not found"}), 404
     else:
         return jsonify({"message": "Client not found"}), 404
+    
+@client.delete("/delete/<int:id_client>")
+def delete_client(id_client):
+    # Chercher le client dans la base de données
+    client = ClientModel.query.get(id_client)
+    
+    if client:
+        # Supprimer le client de la base de données
+        db.session.delete(client)
+        db.session.commit()
+        return jsonify({"message": "Client deleted successfully"})
+    else:
+        return jsonify({"message": "Client not found"}), 404
+    
+    
+    
+    
 @client.put("/update/<int:client_id>")
 def update_client(client_id):
     data = request.json

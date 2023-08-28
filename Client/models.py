@@ -20,12 +20,13 @@ class ClientModel(db.Model):
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     # Relation Many-to-One avec la table "Entreprise"
     entreprise = relationship("Entreprise", backref="client")  # Modifiez "entreprise" en "Entreprise"
-
+ 
     # Relation One-to-Many avec la table "facture"
     #factures_relance = db.relationship("FactureModel", backref="client", lazy=True)
  
     def __init__(
         self,
+       
         nom,
         adresse,
         contact,
@@ -34,6 +35,7 @@ class ClientModel(db.Model):
         email_destinataire,
         email_copies,
     ):
+        
         self.nom = nom
         self.adresse = adresse
         self.contact = contact
@@ -44,6 +46,7 @@ class ClientModel(db.Model):
 
     def serialize(self):
         return {
+            "id_client":self.id_client,
             "nom": self.nom,
             "adresse": self.adresse,
             "contact": self.contact,

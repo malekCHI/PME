@@ -24,6 +24,9 @@ def create_paiement():
     # Vérifier si la facture est déjà payée
     if facture.statut == TypeStatut.PAYEE.value:
         return jsonify({"message": "La facture est déjà payée. Impossible d'ajouter un nouveau paiement."}), 400
+    
+    montant = float(data.get("montant"))
+    total_ttc = float(facture.total_ttc)
     # Vérifier si le montant est supérieur au montant total de la facture
     if montant > facture.total_ttc:
        raise Exception("Le montant du paiement ne doit pas dépasser le montant total de la facture (TTC).")
@@ -53,6 +56,7 @@ def create_paiement():
     if statut is not None:
         facture.statut = statut.value
     else:
+        
         
      # Si la fonction retourne None, vous pouvez lever une exception si nécessaire
      raise Exception(f"Impossible de déterminer le paiement de la facture. Montant restant à payer : {montant_restant}.")
