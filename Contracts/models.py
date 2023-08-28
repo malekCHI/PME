@@ -60,6 +60,7 @@ class ContractModel(db.Model):
             else None,
             "fichier_pdf": self.fichier_pdf,
             "creation_date": self.creation_date.strftime("%Y-%m-%d %H:%M:%S"),
+
         }
 
     def save_to_db(self):

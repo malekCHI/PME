@@ -1,0 +1,14 @@
+Objet : Alerte - Date limite de nouvelle négociation de contrat approchant
+ 
+Cher(e) {{ Nom }},
+ 
+Nous tenons à vous informer qu'une date limite de nouvelle négociation de contrat approche. Le contrat en question nécessite une attention particulière, car sa date limite de renégociation est imminente.
+ 
+Voici les détails essentiels du contrat :
+Numéro de contrat : {{ Numero_du_contrat }}
+Nom du client : {{ Nom_du_client }}
+Date limite de nouvelle négociation : {{ Date_limite }}
+
+Nous vous encourageons à prendre les mesures nécessaires pour entamer le processus de renégociation en temps opportun, afin de garantir une continuité harmonieuse de notre relation contractuelle avec le client.
+
+Cordialement,
