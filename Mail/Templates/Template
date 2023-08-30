@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ Negotation_Contrat }}</title>
+  </head>
+  <body>
+    <h1>{{ alert_subject }}</h1>
+    <p>
+      Cher(e) {{ Nom }},<br />
+      Nous tenons à vous informer qu'une date limite de nouvelle négociation de
+      contrat approche. Le contrat en question nécessite une attention
+      particulière, car sa date limite de renégociation est imminente. Voici les
+      détails essentiels du contrat :<br />
+      Numéro de contrat : {{ Numero_du_contrat }}<br />
+      Nom du client : {{ Nom_du_client }}<br />
+      Date limite de nouvelle négociation : {{ Date_limite }}<br />
+      Nous vous encourageons à prendre les mesures nécessaires pour entamer le
+      processus de renégociation en temps opportun, afin de garantir une
+      continuité harmonieuse de notre relation contractuelle avec le client.<br />
+      Cordialement,
+    </p>
+  </body>
+</html>

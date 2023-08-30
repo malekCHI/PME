@@ -15,8 +15,10 @@ class PaiementModel(db.Model):
     id_facture = db.Column(
         db.Integer, db.ForeignKey("facture.id_facture"), nullable=False
     )
+
     montant = db.Column(db.Float, nullable=False)
-    date_paiement = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    date_paiement = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False)
 
     def serialize(self):
         data = {

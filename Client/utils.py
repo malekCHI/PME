@@ -2,7 +2,8 @@ from flask import request
 
 # from Client.models import ClientModel
 from .models import ClientModel
-from.views import Entreprise
+from .views import Entreprise
+
 
 def get_all_Clients():
     return {"client": list(map(lambda x: x.serialize(), ClientModel.query.all()))}
@@ -15,8 +16,10 @@ def get_client(_id_Client):
     else:
         return {"error": "Client not found"}
 
+
 def get_entreprise_by_id(id_entreprise):
     return Entreprise.query.get(id_entreprise)
+
 
 def is_valid_email(email):
     return "@" in email and email.endswith(".com")
@@ -35,7 +38,6 @@ def add_client(
     email_destinataire,
     email_copies,
 ):
-    # Rest of the code remains the same
 
     if not is_valid_string(nom):
         return {"error": "Invalid name"}

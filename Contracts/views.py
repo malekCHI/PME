@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from Contracts.utils import get_all_contracts, add_contract, find_closest_expiring_contract
+from Contracts.utils import find_closest_expiring_contract, add_contract, get_all_contracts
 from Contracts.models import ContractModel
 from Client.models import ClientModel
 from datetime import datetime
@@ -26,9 +26,9 @@ def get_active_contracts_count():
             if contract.date_fin >= date.today():
                 active_count += 1
 
-        return jsonify({"status": "success", "active_contracts_count": active_count}), 200
+        return jsonify({"statut": "success", "active_contracts_count": active_count}), 200
     except Exception as e:
-        return jsonify({"status": "failure", "message": str(e)}), 500
+        return jsonify({"statut": "failure", "message": str(e)}), 500
 
 
 @contract.get("/closest_expiring_contract")
@@ -45,19 +45,21 @@ def get_closest_expiring_contract():
 
         if closest_contract is not None:
             return jsonify({
-                "status": "success",
+                "statut": "success",
                 "contract": {
                     "id_contract": closest_contract.id_contract,
-
                     "nom": closest_contract.client.nom,
                     "date_fin": closest_contract.date_fin.strftime("%Y-%m-%d"),
                     # Add other fields as needed
                 }
             }), 200
         else:
-            return jsonify({"status": "failure", "message": "No contracts found"}), 404
+            return jsonify({
+                "statut": "failure",
+                "message": "No active contracts found"
+            }), 404  # Updated the message here
     except Exception as e:
-        return jsonify({"status": "failure", "message": str(e)}), 500
+        return jsonify({"statut": "failure", "message": str(e)}), 500
 
 
 @contract.post("/create")

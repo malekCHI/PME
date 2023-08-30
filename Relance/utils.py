@@ -3,10 +3,11 @@ from Relance.models import RelanceModel
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import os
+
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import timedelta
 from datetime import datetime, timedelta
+import os
 # Initialize the scheduler
 scheduler = BackgroundScheduler(daemon=True)
 scheduler.start()

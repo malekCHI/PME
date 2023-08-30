@@ -15,25 +15,27 @@ from db import db
 from datetime import datetime
 from operator import itemgetter
 
+
+from datetime import date  # Add this import if not already imported
+
 def find_closest_expiring_contract(contracts):
-    """
-    Finds the closest expiring contract based on the date_fin attribute.
     
-    Parameters:
-    - contracts: List of ContractModel objects
-    
-    Returns:
-    - The closest expiring ContractModel object
-    """
     closest_contract = None
     closest_date = None
-    
+    current_date = date.today()  # Get the current date
+
     for contract in contracts:
+        # Skip contracts that are already expired
+        if contract.date_fin < current_date:
+            continue
+
+        # Search for the closest expiring contract among the remaining contracts
         if closest_date is None or contract.date_fin < closest_date:
             closest_date = contract.date_fin
             closest_contract = contract
-            
+
     return closest_contract
+
 
 def get_all_contracts():
     # type: ignore

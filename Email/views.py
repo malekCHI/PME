@@ -5,13 +5,14 @@ from Email.utils import (
     generate_rappel_action_email,
     generate_rappel_paiement_email,
     generate_validation_email,
-    
+
 )
 import os
 
-TEMPLATES_FOLDER = os.getenv('TEMPLATES', '')  
+TEMPLATES_FOLDER = os.getenv('TEMPLATES', '')
 
 email = Blueprint("email", __name__, url_prefix="/email")
+
 
 @email.post('/generate_date_nego')
 def generate_date_nego():
@@ -33,6 +34,7 @@ def generate_date_nego():
 #     }
 # }
 
+
 @email.post('/generate_facture')
 def generate_facture():
     data = request.get_json()
@@ -53,6 +55,7 @@ def generate_facture():
 #     }
 # }
 
+
 @email.post('/generate_rappel_action')
 def generate_rappel_action():
     data = request.get_json()
@@ -72,6 +75,8 @@ def generate_rappel_action():
 #         "Nom_de_l_entreprise": "Ma Société"
 #     }
 # }
+
+
 @email.post('/generate_rappel_paiement')
 def generate_rappel_paiement():
     data = request.get_json()
@@ -89,6 +94,60 @@ def generate_rappel_paiement():
 #         "Nom_de_l_entreprise": "Ma Société"
 #     }
 # }
+
+
+@email.post('/create_template')
+def create_template():
+    data = request.get_json()
+    template_content = data.get("template_content")
+    if template_content:
+        try:
+            with open('template.txt', 'w') as file:
+                file.write(template_content)
+            return jsonify({"message": "Template created successfully"}), 201
+        except Exception as e:
+            return jsonify({"message": f"Error creating template: {str(e)}"}), 500
+    else:
+        return jsonify({"message": "Template content is required"}), 400
+
+
+@email.get('/read_template')
+def read_template():
+    try:
+        with open('template.txt', 'r') as file:
+            template_content = file.read()
+            return jsonify({"template_content": template_content}), 200
+    except FileNotFoundError:
+        return jsonify({"message": "Template not found"}), 404
+    except Exception as e:
+        return jsonify({"message": f"Error reading template: {str(e)}"}), 500
+
+
+@email.put('/update_template')
+def update_template():
+    data = request.get_json()
+    template_content = data.get('template_content')
+    if template_content:
+        try:
+            with open('template.txt', 'w') as file:
+                file.write(template_content)
+            return jsonify({"message": "Template updated successfully"}), 200
+        except Exception as e:
+            return jsonify({"message": f"Error updating template: {str(e)}"}), 500
+    else:
+        return jsonify({"message": "Template content is required"}), 400
+
+
+@email.delete('/delete_template')
+def delete_template():
+    try:
+        os.remove('template.txt')
+        return jsonify({"message": "Template deleted successfully"}), 200
+    except FileNotFoundError:
+        return jsonify({"message": "Template not found"}), 404
+    except Exception as e:
+        return jsonify({"message": f"Error deleting template: {str(e)}"}), 500
+
 
 @email.post('/generate_validation')
 def generate_validation():
